@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net  
+           http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping>
+		<class-a>com.dayuan.bean.Materiel</class-a>
+		<class-b>com.dayuan.dto.MaterielDTO</class-b>
+		<field>
+		 <a>mtypeName</a>
+		 <b>mtypeName</b>
+		</field>
+		<field>
+			<a>materielNo</a>
+			<b>materielNo</b>
+		</field>
+		<field>
+			<a>materielName</a>
+			<b>materielName</b>
+		</field>
+
+
+		<field>
+			<a>materielTypeId</a>
+			<b>materielTypeId</b>
+		</field>
+		<field>
+			<a>modelSpecification</a>
+			<b>modelSpecification</b>
+		</field>
+		<field>
+			<a>footprint</a>
+			<b>footprint</b>
+		</field>
+		<field>
+			<a>picture</a>
+			<b>picture</b>
+		</field>
+		<field>
+			<a>updateTime</a>
+			<b>updateTime</b>
+		</field>
+		<field>
+			<a>comment</a>
+			<b>comment</b>
+		</field>
+		<field>
+			<a>drawings</a>
+			<b>drawings</b>
+		</field>
+		
+	</mapping>
+</mappings>  
+

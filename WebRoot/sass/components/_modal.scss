@@ -1,0 +1,147 @@
+
+.modal {
+  border-radius: $modal-radius;
+  z-index: $zindex-modal;
+  position: fixed;
+  top: 10%;
+  background-color: $white;
+  margin: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
+  visibility: hidden;
+  transform: scale(0.5);
+  opacity: 0;
+  transition: transform .35s ease-in-out, visibility .35s ease-in-out, opacity .35s ease-in-out;
+  width: 800px;
+  left: 50%;
+  margin-left: -400px;
+
+  &.lg {
+    width: 1000px;
+    margin-left: -500px
+  }
+
+  &.active {
+    visibility: visible;
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  .modal-title {
+    font-size: $modal-title-font-size;
+    background-color: $primary;
+    color: $white;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+  }
+
+  .modal-content {
+    padding: $modal-content-padding;
+    color: $gray;
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  .modal-action {
+    padding: $modal-action-padding;
+    text-align: center;
+    margin-top: 20px;
+
+    .btn {
+      margin: 8px;
+    }
+  }
+
+  // postion
+  &.modal-aside {
+    height: 100%;
+    top: 0;
+    width: 20%;
+    border-radius: 0;
+    left: auto;
+    transform: translateX(100%);
+
+    &.active {
+      transform: translateX(0);
+    }
+  }
+
+  &.modal-full {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    background-color: rgba(255, 255, 255, 0.9);
+
+    .modal-content, .modal-action {
+      width: 40%;
+      margin: 0 auto;
+    }
+
+    .modal-content {
+      margin-top: 10%;
+    }
+
+    button.close {
+      width: 4rem;
+      height: 4rem;
+      margin: 1.5rem auto;      
+      color: $gray-lighter;
+      font-size: 4rem;
+      background: none !important;
+      font-weight: 100;
+      display: block;
+
+      &:hover, &:focus, &:active {
+        background: none !important;
+      }
+    }
+  }
+  
+  &.modal-top {
+    top: 0;
+  }
+
+  &.modal-bottom {
+    top: auto;
+    bottom: 0;
+  }
+
+  // size
+  &.modal-lg {
+    width: 90%;
+  }
+
+  &.modal-sm {
+    width: 20%;
+  }
+}
+
+
+.modal-overlay {
+  position: fixed;
+  z-index: $zindex-modal-overlay;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background-color: $black;
+
+  &.fade {
+    opacity: 0;
+    transition: opacity 0.15s linear 0s
+  }
+
+  &.active {
+    opacity: 0.5;
+  }
+}
+
+// for body
+.modal-open {
+  overflow: hidden;
+}
+
+

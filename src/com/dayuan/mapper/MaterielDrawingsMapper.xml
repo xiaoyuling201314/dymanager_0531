@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.MaterielDrawingsMapper" >
+  <resultMap id="BaseResultMap" type="com.dayuan.bean.MaterielDrawings" >
+  	<id column="id" property="id" jdbcType="INTEGER" />
+    <result column="materielNo" property="materielNo" jdbcType="VARCHAR" />
+    <result column="version" property="version" jdbcType="VARCHAR" />
+    <result column="drawingName" property="drawingName" jdbcType="VARCHAR" />
+    <result column="reviser" property="reviser" jdbcType="VARCHAR" />
+    <result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="revisedRecord" property="revisedRecord" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <!-- <resultMap id="JoinMaterMap" type="com.dayuan.bean.MaterielDrawings" >
+  	<id column="id" property="id" />
+    <id column="version" property="version" jdbcType="VARCHAR" />
+    <result column="drawingName" property="drawingName" jdbcType="VARCHAR" />
+    <result column="reviser" property="reviser" jdbcType="VARCHAR" />
+    <result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="revisedRecord" property="revisedRecord" jdbcType="VARCHAR" />
+    <association property="materielNo" column="materielNo" javaType="com.dayuan.bean.Materiel" resultMap="com.dayuan.dao.MaterielMapper.BaseResultMap"/>
+  </resultMap> -->
+   
+  
+  <sql id="Base_Column_List" >
+    id,materielNo, version, drawingName, reviser, updateTime, revisedRecord
+  </sql>
+  
+  <select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_business_materieldrawings
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+ <select id="queryAllName" resultType="java.lang.String">
+		select
+		drawingName
+		from tbl_business_materieldrawings
+		where materielNo = #{materielNo}
+	</select>
+	
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+        delete from tbl_business_materieldrawings
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="add" parameterType="com.dayuan.bean.MaterielDrawings" >
+    insert into tbl_business_materieldrawings (materielNo, version, drawingName, 
+      reviser, updateTime, revisedRecord
+      )
+    values (#{materielNo,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR}, #{drawingName,jdbcType=VARCHAR}, 
+      #{reviser,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}, #{revisedRecord,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+  <!-- 批量插入数据 -->
+   <insert id="addList" useGeneratedKeys="true" keyProperty="id" parameterType="List" >
+    insert into tbl_business_materieldrawings (materielNo, version, drawingName, 
+      reviser, updateTime, revisedRecord
+      ) values
+      <foreach collection="list" item="draws" index="index" separator=",">
+      (#{draws.materielNo}, #{draws.version}, #{draws.drawingName}, #{draws.reviser}, #{draws.updateTime}, #{draws.revisedRecord}
+      )
+      </foreach>
+     
+  </insert>
+ 
+ <select id="queryDrawsById" resultMap="BaseResultMap" >
+	 select 
+    <include refid="Base_Column_List" />
+    from tbl_business_materieldrawings
+    where materielNo = #{materielNo}
+ </select>
+ <select id="queryLastDrawsById" resultType="java.lang.String" >
+ select 
+ 	 drawingName as showDrawings
+    from tbl_business_materieldrawings
+    where materielNo = #{materielNo}
+    ORDER BY updateTime DESC limit 1
+
+ </select> 
+  <insert id="addBySelective" parameterType="com.dayuan.bean.MaterielDrawings" >
+    insert into tbl_business_materieldrawings
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="materielNo != null" >
+        materielNo,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+      <if test="drawingName != null" >
+        drawingName,
+      </if>
+      <if test="reviser != null" >
+        reviser,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+      <if test="revisedRecord != null" >
+        revisedRecord,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="materielNo != null" >
+        #{materielNo,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="drawingName != null" >
+        #{drawingName,jdbcType=VARCHAR},
+      </if>
+      <if test="reviser != null" >
+        #{reviser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="revisedRecord != null" >
+        #{revisedRecord,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateBySelective" parameterType="com.dayuan.bean.MaterielDrawings" >
+    update tbl_business_materieldrawings
+    <set >
+      <if test="materielNo != null" >
+        materielNo = #{materielNo,jdbcType=VARCHAR},
+      </if>
+      <if test="drawingName != null" >
+        drawingName = #{drawingName,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="reviser != null" >
+        reviser = #{reviser,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="revisedRecord != null" >
+        revisedRecord = #{revisedRecord,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+ 
+  <update id="updateById" parameterType="com.dayuan.bean.MaterielDrawings" >
+       update tbl_business_materieldrawings
+    set materielNo = #{materielNo,jdbcType=VARCHAR},
+      drawingName = #{drawingName,jdbcType=VARCHAR},
+      version = #{version,jdbcType=VARCHAR},
+      reviser = #{reviser,jdbcType=VARCHAR},
+      updateTime = #{updateTime,jdbcType=DATE},
+      revisedRecord = #{revisedRecord,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

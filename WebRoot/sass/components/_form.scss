@@ -1,0 +1,92 @@
+:-webkit-input-placeholder {
+  color: $input-placeholder-color;
+}
+
+:-moz-placeholder {  /* Firefox 19+ */
+  color: $input-placeholder-color;
+}
+
+::-moz-placeholder {
+  color: $input-placeholder-color;
+}
+
+:-ms-input-placeholder {
+  color: $input-placeholder-color;
+}
+
+.form-group {
+  position: relative;
+  margin-bottom: $form-cell-margin;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .form-material {
+    margin-bottom: 0;
+  }
+  @include clearfix;
+}
+
+.form-label {
+  text-align: right;
+  padding-top: $input-padding-y;
+}
+
+
+// 输入框
+.form-control {
+  display: block;
+  width: 100%;
+  border-radius: $input-radius;
+  border: 1px solid $input-border-color;
+  font-size: $font-size-base;
+  padding: $input-padding-y $input-padding-x;
+  transition: border 0.25s linear;
+  background-color: transparent;
+  background-color: $white;
+  line-height: $line-height;
+  outline: none;
+  height: 38px;
+
+  &:focus {
+    border-color: $primary;
+  }
+
+  &.round {
+    border-radius: 200px;
+  }
+
+  &:disabled {
+    color: $input-disabled-color;
+    background-color: $input-disabled-bg;
+    cursor: not-allowed;
+  }
+}
+
+textarea.form-control {
+  height: auto;
+}
+
+// 修改文件
+.file-control {
+  position: relative;
+  display: inline-block;
+  border: 1px solid $input-border-color;
+  border-radius: 4px;
+  padding: $input-padding-y 16px;
+  overflow: hidden;
+
+  input[type="file"] {
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    height: 38px;
+  }
+
+  &:hover {
+    background: $white;
+  }
+}
+

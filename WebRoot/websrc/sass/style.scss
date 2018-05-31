@@ -1,0 +1,33 @@
+
+// 变量与混合
+@import "variables";
+@import "mixins";
+
+
+// 浏览器样式统一
+@import "components/normalize";
+@import "components/reboot";
+
+
+// 组件
+@import "components/typography";  //排版
+@import "components/form";        //表单
+@import "components/button";      //按钮
+@import "components/checkbox";    //复选框
+@import "components/table";       //表格
+@import "components/pagination";  //分页
+@import "components/modal";       //模态框
+@import "components/upload";      //图片上传
+@import "components/grid";        //栅格
+@import "components/lightbox";    //灯箱
+@import "components/alert";       //提示框
+
+
+// 页面
+@import "app/base";
+@import "app/header";
+@import "app/home";
+@import "app/login";
+@import "app/users";
+@import "app/materials";
+@import "app/instruments";

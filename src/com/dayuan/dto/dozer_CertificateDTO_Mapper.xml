@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net  
+           http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping>
+		<class-a>com.dayuan.bean.Certificate</class-a>
+		<class-b>com.dayuan.dto.CertificateDTO</class-b>
+
+		<field>
+			<a>id</a>
+			<b>id</b>
+		</field>
+		<field>
+			<a>sapNo</a>
+			<b>sapNo</b>
+		</field>
+
+
+		<field>
+			<a>calibrationCertificate</a>
+			<b>calibrationCertificate</b>
+		</field>
+		<field>
+			<a>certificateType</a>
+			<b>certificateType</b>
+		</field>
+		<field>
+			<a>qualificationAttribution</a>
+			<b>qualificationAttribution</b>
+		</field>
+		<field>
+			<a>calibStartTime</a>
+			<b>calibStartTime</b>
+		</field>
+		<field>
+			<a>calibEndTime</a>
+			<b>calibEndTime</b>
+		</field>
+		<field>
+			<a>reviser</a>
+			<b>reviser</b>
+		</field>
+		<field>
+			<a>updateTime</a>
+			<b>updateTime</b>
+		</field>
+		
+	</mapping>
+</mappings>  
+

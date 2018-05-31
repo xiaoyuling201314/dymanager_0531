@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.CertificateMapper" >
+  <resultMap id="BaseResultMap" type="com.dayuan.bean.Certificate" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+     <result column="sapNo" property="sapNo" /> 
+    <result column="calibrationCertificate" property="calibrationCertificate"/>
+    <result column="qualificationAttribution" property="qualificationAttribution" />
+    <result column="certificateType" property="certificateType" /> 
+    <result column="calibStartTime" property="calibStartTime"  />
+    <result column="calibEndTime" property="calibEndTime" />
+    <result column="reviser" property="reviser" />
+    <result column="updateTime" property="updateTime" />
+ <!--   <association property="sapNo" resultMap="com.dayuan.bean.InstrumentinfoMapper.BaseResultMap"></association>
+    <association property="certificateType" resultMap="com.dayuan.dao.CertificateTypeMapper.BaseResultMap"/>
+         <association property="sapNo" column="sapNo" javaType="com.dayuan.bean.Instrumentinfo" resultMap="com.dayuan.dao.InstrumentinfoMapper.BaseResultMap"></association>
+    -->
+    </resultMap>
+    
+    <resultMap type="com.dayuan.bean.Certificate" id="joinCertificateType">
+     <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="sapNo" property="sapNo" jdbcType="VARCHAR" /> 
+    <result column="calibrationCertificate" property="calibrationCertificate" jdbcType="VARCHAR" />
+    <result column="qualificationAttribution" property="qualificationAttribution" jdbcType="VARCHAR" />
+    <result column="calibStartTime" property="calibStartTime" jdbcType="TIMESTAMP" />
+    <result column="calibEndTime" property="calibEndTime" jdbcType="TIMESTAMP" />
+    <result column="reviser" property="reviser" jdbcType="VARCHAR" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+     <association property="certificateType" column="certificateType"  javaType="com.dayuan.bean.CertificateType" resultMap="com.dayuan.dao.CertificateTypeMapper.BaseResultMap"/>
+    </resultMap>
+  <sql id="Base_Column_List" >
+    id, sapNo, calibrationCertificate, certificateType, qualificationAttribution, calibStartTime, 
+    calibEndTime, reviser, updateTime
+  </sql>
+  
+  <select id="queryById" resultMap="joinCertificateType" parameterType="java.lang.String" >
+    select 
+    *
+    from tbl_business_certificate cr left join tbl_business_certificatetype ct on cr.certificateType=ct.certificateNo
+    where id = #{keys}
+  </select>
+   <select id="queryList" resultMap="joinCertificateType">
+  select 
+    cer.*,cerType.*
+    from tbl_business_certificate cer
+    left join tbl_business_certificatetype cerType on cer.certificateType=cerType.certificateNo
+    where sapNo =#{keys}
+    ORDER BY updateTime desc LIMIT #{curPage},#{pageSize}
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from tbl_business_certificate
+    where id = #{id}
+  </delete>
+  
+   <select id="queryRecordCount" resultType="java.lang.Integer">
+   select 
+    count(1)
+    from tbl_business_certificate
+    where sapNo =#{keys}
+    
+  </select>
+  
+  <insert id="add" useGeneratedKeys="true" keyProperty="id" parameterType="com.dayuan.bean.Certificate" >
+    insert into tbl_business_certificate (sapNo, calibrationCertificate, 
+      certificateType, qualificationAttribution, 
+      calibStartTime, calibEndTime, reviser, 
+      updateTime)
+    values (#{sapNo}, #{calibrationCertificate}, 
+      #{certificateType.certificateNo}, #{qualificationAttribution}, 
+      #{calibStartTime}, #{calibEndTime}, #{reviser}, 
+      #{updateTime})
+  </insert>
+ 
+  <insert id="addBySelective" useGeneratedKeys="true" keyProperty="id"  parameterType="com.dayuan.bean.Certificate" >
+    insert into tbl_business_certificate
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="sapNo != null" >
+        sapNo,
+      </if>
+      <if test="calibrationCertificate != null" >
+        calibrationCertificate,
+      </if>
+      <if test="certificateType != null" >
+        certificateType,
+      </if>
+      <if test="qualificationAttribution != null" >
+        qualificationAttribution,
+      </if>
+      <if test="calibStartTime != null" >
+        calibStartTime,
+      </if>
+      <if test="calibEndTime != null" >
+        calibEndTime,
+      </if>
+      <if test="reviser != null" >
+        reviser,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="sapNo != null" >
+        #{sapNo},
+      </if>
+      <if test="calibrationCertificate != null" >
+        #{calibrationCertificate},
+      </if>
+      <if test="certificateType != null" >
+        #{certificateType.certificateNo},
+      </if>
+      <if test="qualificationAttribution != null" >
+        #{qualificationAttribution},
+      </if>
+      <if test="calibStartTime != null" >
+        #{calibStartTime},
+      </if>
+      <if test="calibEndTime != null" >
+        #{calibEndTime},
+      </if>
+      <if test="reviser != null" >
+        #{reviser},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime},
+      </if>
+    </trim>
+  </insert>
+ 
+  <update id="updateBySelective" parameterType="com.dayuan.bean.Certificate" >
+    update tbl_business_certificate
+    <set >
+      <if test="sapNo != null" >
+        sapNo = #{sapNo},
+      </if>
+      <if test="calibrationCertificate != null" >
+        calibrationCertificate = #{calibrationCertificate},
+      </if>
+      <if test="certificateType != null" >
+        certificateType = #{certificateType.certificateNo},
+      </if>
+      <if test="qualificationAttribution != null" >
+        qualificationAttribution = #{qualificationAttribution},
+      </if>
+      <if test="calibStartTime != null" >
+        calibStartTime = #{calibStartTime},
+      </if>
+      <if test="calibEndTime != null" >
+        calibEndTime = #{calibEndTime},
+      </if>
+      <if test="reviser != null" >
+        reviser = #{reviser},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime},
+      </if>
+    </set>
+    where id = #{id}
+  </update>
+ 
+  <update id="updateById" parameterType="com.dayuan.bean.Certificate" >
+    update tbl_business_certificate
+    set sapNo = #{sapNo},
+      calibrationCertificate = #{calibrationCertificate},
+      certificateType = #{certificateType.certificateNo},
+      qualificationAttribution = #{qualificationAttribution},
+      calibStartTime = #{calibStartTime},
+      calibEndTime = #{calibEndTime},
+      reviser = #{reviser},
+      updateTime = #{updateTime}
+    where id = #{id}
+  </update>
+ <select id="queryAllName" resultType="java.lang.String">
+  select 
+    calibrationCertificate
+    from tbl_business_certificate
+    where sapNo = #{keys}
+  </select>
+</mapper>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net  
+           http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping>
+		<class-a>com.dayuan.bean.CircuitboardDetail</class-a>
+		<class-b>com.dayuan.dto.CircuitboardDetailDTO</class-b>
+
+		<field>
+			<a>id</a>
+			<b>id</b>
+		</field>
+		<field>
+			<a>circuitId</a>
+			<b>circuitId</b>
+		</field>
+		<field>
+			<a>materielNo</a>
+			<b>materielNo</b>
+		</field>
+		<field>
+			<a>locationNo</a>
+			<b>locationNo</b>
+		</field>
+		<field>
+			<a>quantity</a>
+			<b>quantity</b>
+		</field>
+		<field>
+		  <a>updateTime</a>
+		  <b>updateTime</b>
+		</field>
+		<field>
+			<a>comments</a>
+			<b>comments</b>
+		</field>
+		
+	</mapping>
+</mappings>  
+

@@ -1,0 +1,79 @@
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
+
+body {
+  font-size: $font-size-root;
+  background-color: $body-bg;
+  font-family: $font-family-base;
+  color: $body-color;
+  line-height: $line-height;
+  overflow-x: hidden;
+  overflow-y: scroll; 
+  position: relative;
+  height: 100%;
+}
+
+ul, li, ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+input, textarea {
+  outline: 0;
+}
+
+p {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+a {
+  background-color: transparent;
+  text-decoration: none;
+  color: $link;
+  cursor: pointer;
+  transition: all .35s ease-in-out;
+
+  &:hover, &:active, &:focus {
+    color: darken($link, 10%);
+    outline: 0;
+  }
+}
+
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+th {
+  text-align: left;
+}
+
+code, kbd, pre, samp {
+  font-family: $font-family-code;
+}
+
+code, kbd {
+  padding: 3px 6px;
+  font-size: 90%;
+  color: #5d9cec;
+  background-color: #f5f2f0;
+  border-radius: 2px;
+}
+pre > code {
+  padding: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+input[type='checkbox'] + label {cursor: pointer;}

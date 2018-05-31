@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:aop="http://www.springframework.org/schema/aop"  
+    xmlns:tx="http://www.springframework.org/schema/tx" 
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd" default-autowire="byType">
+	<!-- Annotation Config -->	
+	<context:annotation-config/>
+	<!-- 扫描Service -->
+	<context:component-scan base-package="com.dayuan.service" />
+	<!-- 引入配置属性文件 <context:property-placeholder location="classpath:jdbc.properties" />-->
+	<context:property-placeholder file-encoding="UTF-8" location="classpath:jdbc.properties" />
+	
+	<aop:aspectj-autoproxy/>
+	<!-- com.alibaba.druid.pool.DruidDataSource***************配置数据源**************org.springframework.jdbc.datasource.DriverManagerDataSource-->
+		<bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close" >	
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
+         
+      <property name="url" value="jdbc:mysql://120.24.239.96:3366/dymanager?useUnicode=true&amp;charaterEncoding=utf-8"></property> 
+         <property name="username" value="dbuser1"></property> 
+         <property name="password" value="888888"></property>  
+   
+<!-- <property name="url" value="jdbc:mysql://localhost:3306/dymanager?useUnicode=true&amp;charaterEncoding=utf-8"></property>  -->
+<!--          <property name="username" value="root"></property>  -->
+<!--          <property name="password" value="root"></property>     -->
+	</bean> 
+	
+	<!-- ***************事务配置************** -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+	<aop:config>  
+        <aop:advisor pointcut="execution(* com.dayuan.service.*.*(..))"  
+            advice-ref="txAdvice" />  
+    </aop:config>  
+  
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">  
+        <tx:attributes>  
+        <tx:method name="add*" propagation="REQUIRED"/>
+        <tx:method name="delete*" propagation="REQUIRED"/>
+        <tx:method name="update*" propagation="REQUIRED"/>
+        <tx:method name="query*" propagation="REQUIRED" read-only="true" />
+           <!--  <tx:method name="get*" read-only="true" />  
+            <tx:method name="query*" read-only="true" />  
+            <tx:method name="find*" read-only="true" />  
+            <tx:method name="load*" read-only="true" />
+            <tx:method name="select*" read-only="true" />  
+            <tx:method name="*" propagation="REQUIRED" rollback-for="Exception" /> -->  
+        </tx:attributes>  
+    </tx:advice>  
+	
+<!-- spring和MyBatis完美整合，不需要mybatis的配置映射文件 -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<!-- 自动扫描mapping.xml文件 -->
+		<property name="mapperLocations" value="classpath:com/dayuan/mapper/*.xml"></property>
+	</bean>
+
+	<!-- DAO接口所在包名，Spring会自动查找其下的类 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<property name="basePackage" value="com.dayuan.dao" />
+		<property name="sqlSessionFactoryBeanName" value="sqlSessionFactory" />
+	</bean>
+	
+	
+	<!-- Dozer与Spring整合 -->
+	<bean id="mapper" class="org.dozer.spring.DozerBeanMapperFactoryBean">
+		<property name="mappingFiles">
+			<list>
+				<value>classpath:com/dayuan/dto/dozer_*.xml</value>
+			</list>
+		</property>
+	</bean>
+	
+</beans>
+

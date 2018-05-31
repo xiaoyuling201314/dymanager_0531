@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.CertificateTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.dayuan.bean.CertificateType" >
+    <id column="certificateNo" property="certificateNo" jdbcType="INTEGER" />
+    <result column="certificateName" property="certificateName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    certificateNo, certificateName
+  </sql>
+  
+  <select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_business_certificatetype
+    where certificateNo = #{certificateNo,jdbcType=INTEGER}
+  </select>
+  <select id="queryAllType" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from tbl_business_certificatetype
+  </select>
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from tbl_business_certificatetype
+    where certificateNo = #{certificateNo,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="add" parameterType="com.dayuan.bean.CertificateType" >
+    insert into tbl_business_certificatetype (certificateNo, certificateName)
+    values (#{certificateNo,jdbcType=INTEGER}, #{certificateName,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="addBySelective" parameterType="com.dayuan.bean.CertificateType" >
+    insert into tbl_business_certificatetype
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="certificateNo != null" >
+        certificateNo,
+      </if>
+      <if test="certificateName != null" >
+        certificateName,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="certificateNo != null" >
+        #{certificateNo,jdbcType=INTEGER},
+      </if>
+      <if test="certificateName != null" >
+        #{certificateName,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateBySelective" parameterType="com.dayuan.bean.CertificateType" >
+    update tbl_business_certificatetype
+    <set >
+      <if test="certificateName != null" >
+        certificateName = #{certificateName,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where certificateNo = #{certificateNo,jdbcType=INTEGER}
+  </update>
+  
+  <update id="updateById" parameterType="com.dayuan.bean.CertificateType" >
+    update tbl_business_certificatetype
+    set certificateName = #{certificateName,jdbcType=VARCHAR}
+    where certificateNo = #{certificateNo,jdbcType=INTEGER}
+  </update>
+  
+</mapper>

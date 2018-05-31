@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net  
+           http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping>
+		<class-a>com.dayuan.bean.SysUser</class-a>
+		<class-b>com.dayuan.dto.SysUserDTO</class-b>
+
+		<field>
+			<a>userName</a>
+			<b>userName</b>
+		</field>
+		<field>
+			<a>password</a>
+			<b>password</b>
+		</field>
+
+
+		<field>
+			<a>name</a>
+			<b>name</b>
+		</field>
+		<field>
+			<a>email</a>
+			<b>email</b>
+		</field>
+		<field>
+			<a>state</a>
+			<b>state</b>
+		</field>
+		<field>
+			<a>department</a>
+			<b>department</b>
+		</field>
+		<field>
+			<a>superAdmin</a>
+			<b>superAdmin</b>
+		</field>
+		<field>
+			<a>phone</a>
+			<b>phone</b>
+		</field>
+		<field>
+			<a>comment</a>
+			<b>comment</b>
+		</field>
+		<field>
+			<a>updateTime</a>
+			<b>updateTime</b>
+		</field>
+		<field>
+		 <a>rightList</a>
+		 <b>rightList</b>
+		</field>
+	</mapping>
+</mappings>  
+

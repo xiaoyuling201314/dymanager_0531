@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net  
+           http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping>
+		<class-a>com.dayuan.bean.Instrumentinfo</class-a>
+		<class-b>com.dayuan.dto.InstrumentinfoDTO</class-b>
+
+		<field>
+			<a>sapNo</a>
+			<b>sapNo</b>
+		</field>
+		<field>
+			<a>brand</a>
+			<b>brand</b>
+		</field>
+
+
+		<field>
+			<a>productName</a>
+			<b>productName</b>
+		</field>
+		<field>
+			<a>productLinel</a>
+			<b>productLinel</b>
+		</field>
+		<field>
+			<a>listedTime</a>
+			<b>listedTime</b>
+		</field>
+		<field>
+			<a>picture</a>
+			<b>picture</b>
+		</field>
+		<field>
+			<a>executionStandard</a>
+			<b>executionStandard</b>
+		</field>
+		<field>
+			<a>state</a>
+			<b>state</b>
+		</field>
+		<field>
+			<a>delistingDate</a>
+			<b>delistingDate</b>
+		</field>
+		<field>
+			<a>updateTime</a>
+			<b>updateTime</b>
+		</field>
+		
+		<field>
+			<a>netWeight</a>
+			<b>netWeight</b>
+		</field>
+		<field>
+			<a>netSize</a>
+			<b>netSize</b>
+		</field>
+		<field>
+			<a>grossWeight</a>
+			<b>grossWeight</b>
+		</field>
+		<field>
+			<a>grossSize</a>
+			<b>grossSize</b>
+		</field>
+		<field>
+		 <a>comment</a>
+		 <b>comment</b>
+		</field>
+		
+		<field>
+		 <a>cerList</a>
+		 <b>cerList</b>
+		</field>
+		<field>
+		 <a>cirList</a>
+		 <b>cirList</b>
+		</field>
+		<field>
+		 <a>completeList</a>
+		 <b>completeList</b>
+		</field>
+		<field>
+		 <a>docList</a>
+		 <b>docList</b>
+		</field>
+		<field>
+		 <a>manualList</a>
+		 <b>manualList</b>
+		</field>
+		<field>
+		 <a>pList</a>
+		 <b>pList</b>
+		</field>
+	</mapping>
+</mappings>  
+

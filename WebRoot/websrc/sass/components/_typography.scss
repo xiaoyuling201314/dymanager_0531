@@ -1,0 +1,80 @@
+
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 0;
+  margin-bottom: .5rem;
+  font-weight: $font-weight-heading;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: $font-size-h1; }
+h2 { font-size: $font-size-h2; }
+h3 { font-size: $font-size-h3; }
+h4 { font-size: $font-size-h4; }
+h5 { font-size: $font-size-h5; }
+h6 { font-size: $font-size-h6; }
+
+h1 small,
+h2 small,
+h3 small,
+h4 small,
+h5 small,
+h6 small {font-size: 65%;}
+
+hr {
+  margin: 1rem 0;
+  border: 0;
+  border-top: $divider-width solid $divider-color;
+}
+
+hr.dashed {border-top-style: dashed; }
+
+
+.divider {
+  display: block;
+  overflow: hidden;
+  height: $divider-width;
+  background-color: $divider-color;
+}
+
+.text-left {text-align: left;}
+.text-right {text-align: right;}
+.text-center {text-align: center;}
+.text-justify {text-align: justify;}
+.text-hide {@include text-hide();}
+
+.fl {float: left;}
+.fr {float: right;}
+
+.clearfix {@include clearfix();}
+
+.relative {position: relative;}
+
+.invisible {visibility: hidden;}
+.visible {visibility: visible;}
+
+.hide {display:none;}
+.show {display:block;}
+
+.block {
+  display: block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.underline {
+  text-decoration: underline;
+}
+
+ul.inline li {display: inline-block;}
+
+.bg-white {
+  background-color: $white;
+}
+
+@each $color-name in map-keys($colorful) {
+  .text-#{$color-name} {
+    color: map-get($colorful, $color-name) !important;
+  }
+}

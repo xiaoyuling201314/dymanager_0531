@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns="http://dozer.sourceforge.net" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://dozer.sourceforge.net  
+           http://dozer.sourceforge.net/schema/beanmapping.xsd">
+
+	<mapping>
+		<class-a>com.dayuan.bean.Completemachine</class-a>
+		<class-b>com.dayuan.dto.CompletemachineDTO</class-b>
+		<field>
+			<a>id</a>
+			<b>id</b>
+		</field>
+		<field>
+			<a>sapNo</a>
+			<b>sapNo</b>
+		</field>
+		<field>
+			<a>completeMachineVersion</a>
+			<b>completeMachineVersion</b>
+		</field>
+
+
+		<field>
+			<a>completeMachineName</a>
+			<b>completeMachineName</b>
+		</field>
+		<field>
+			<a>createPerson</a>
+			<b>createPerson</b>
+		</field>
+		<field>
+			<a>updateTime</a>
+			<b>updateTime</b>
+		</field>
+		<field>
+			<a>revisedRecord</a>
+			<b>revisedRecord</b>
+		</field>
+	</mapping>
+</mappings>  
+

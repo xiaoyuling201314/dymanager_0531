@@ -1,0 +1,14 @@
+
+$logo-width: 439px;
+$logo-height: 143px;
+
+.main-content.home {
+  .logo {
+    background: url('../img/index_logo.png') no-repeat;
+    @include size($logo-width, $logo-height);
+    position: absolute;
+    left: 50%;
+    top: 40%;
+    margin-left: -($left-width - $logo-width/2);
+  }
+}

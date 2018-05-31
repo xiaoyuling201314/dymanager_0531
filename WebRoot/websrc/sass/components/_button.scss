@@ -1,0 +1,60 @@
+
+.btn {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  border: $btn-border-width solid transparent;
+  white-space: nowrap;
+  outline: none !important;
+  min-width: $btn-min-width;
+  background-color: $btn-default-bg;
+  color: $dark;
+  transition: box-shadow 0.2s ease-out, background-color 0.2s, color, 0.2s;
+  padding: $btn-padding-y $btn-padding-x;
+  font-size: $font-size-root;
+  border-radius: $btn-radius;
+  line-height: 1.5;
+  
+  &:hover {
+    background-color: $btn-hover-bg;
+    color: $dark;
+  }
+
+  &:active {
+    background-color: $btn-active-bg;
+    outline: 0;
+  }
+
+  &:disabled, &:disabled:hover, &.disabled, &.disabled:hover, &.disabled:focus {
+    background-color: $gray-lighter;
+    cursor:not-allowed;
+    color: $gray-light;
+    border: $btn-border-width solid transparent;
+  }
+
+  // button with icon
+  i {
+    margin: 0 .3rem;
+  }
+
+  &.btn-block {
+    display: block;
+    width: 100%;
+  }
+
+  @each $color-name in map-keys($colorful) {
+    &.btn-#{$color-name} {
+      color: $white;
+      background-color: map-get($colorful, $color-name);
+      border-color: map-get($colorful, $color-name);
+
+      &:hover, &:active, &:focus {
+        color: $white;
+        background-color: lighten(map-get($colorful, $color-name),10%);
+        border-color: lighten(map-get($colorful, $color-name),10%);
+      }
+    }
+  }
+}

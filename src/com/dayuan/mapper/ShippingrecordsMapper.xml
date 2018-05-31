@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.ShippingrecordsMapper" >
+  <resultMap id="BaseResultMap" type="com.dayuan.bean.Shippingrecords" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="sapNo" property="sapNo" jdbcType="VARCHAR" />
+    <result column="customer" property="customer" jdbcType="VARCHAR" />
+    <result column="quantity" property="quantity" jdbcType="INTEGER" />
+    <result column="instrumentFuselage" property="instrumentFuselage" jdbcType="VARCHAR" />
+    <result column="inspectionDate" property="inspectionDate" jdbcType="VARCHAR" />
+    <result column="inspectionMan" property="inspectionMan" jdbcType="VARCHAR" />
+    <result column="shippingDate" property="shippingDate" jdbcType="VARCHAR" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="comments" property="comments" jdbcType="VARCHAR" />
+    <result column="softwareVersion" property="softwareVersion" jdbcType="VARCHAR" />
+  </resultMap>
+  
+  <resultMap id="JoinResultMap" type="com.dayuan.bean.Shippingrecords" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="customer" property="customer" jdbcType="VARCHAR" />
+    <result column="quantity" property="quantity" jdbcType="INTEGER" />
+    <result column="instrumentFuselage" property="instrumentFuselage" jdbcType="VARCHAR" />
+    <result column="inspectionDate" property="inspectionDate" jdbcType="VARCHAR" />
+    <result column="inspectionMan" property="inspectionMan" jdbcType="VARCHAR" />
+    <result column="shippingDate" property="shippingDate" jdbcType="VARCHAR" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="comments" property="comments" jdbcType="VARCHAR" />
+      <result column="softwareVersion" property="softwareVersion" jdbcType="VARCHAR" />
+    <association property="sapNo" column="sapNo" javaType="com.dayuan.bean.Instrumentinfo" resultMap="com.dayuan.dao.InstrumentinfoMapper.BaseResultMap"></association>
+   <!-- <collection property="repairList" ofType="com.dayuan.bean.RepairRecord" resultMap="com.dayuan.dao.RepairRecordMapper.BaseResultMap"/>    -->
+  </resultMap>
+  
+     <resultMap id="exportResultMap" type="com.dayuan.bean.ExportShippingrecords" >
+	    <result column="sapNo" property="sapNo" />
+	    <result column="productName" property="productName" />
+	    <result column="customer" property="customer" />
+	    <result column="quantity"  property="quantity" />
+	    <result column="instrumentFuselage" property="instrumentFuselage" />
+	    <result column="inspectionMan"  property="inspectionMan" />
+	    <result column="shippingDate"  property="shippingDate" />
+	    <result column="comments" property="comments" />
+    </resultMap>
+  
+  <sql id="Base_Column_List" >
+    id, sapNo, customer, quantity, instrumentFuselage, inspectionDate, inspectionMan, 
+    shippingDate, updateTime, comments,softwareVersion
+  </sql>
+  <select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_business_shippingrecords
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="queryList" resultMap="JoinResultMap">
+  select 
+    ships.*,instrument.*
+    from tbl_business_shippingrecords ships left join tbl_business_instrumentinfo instrument
+    on ships.sapNo=instrument.sapNo
+     <if test="shipKeys != null and shipKeys != ''" >
+      where ( <![CDATA[ ships.sapNo like CONCAT('%',#{shipKeys},'%') ]]> 
+            or  <![CDATA[ ships.customer like CONCAT('%',#{shipKeys},'%')   ]]>
+            or  <![CDATA[ instrument.productName like CONCAT('%',#{shipKeys},'%')  ]]>
+            or  <![CDATA[ ships.instrumentFuselage like CONCAT('%',#{shipKeys},'%')  ]]> )
+    </if>
+    ORDER BY ships.shippingDate desc LIMIT #{curPage},#{pageSize}
+  </select>
+  
+ <select id="queryAllShipMents" resultMap="JoinResultMap">
+  select 
+    ships.*,instrument.*
+    from tbl_business_shippingrecords ships left join tbl_business_instrumentinfo instrument
+    on ships.sapNo=instrument.sapNo
+   <!--  select  ships.sapNo,  ships.customer,  ships.quantity,  ships.instrumentFuselage,  ships.inspectionDate,  ships.inspectionMan, 
+     ships.shippingDate,  ships.comments from tbl_business_shippingrecords  ships left join tbl_business_instrumentinfo instrument
+    on ships.sapNo=instrument.sapNo -->
+  </select>
+  
+    <select id="viewshipMents" resultMap="JoinResultMap">
+   select 
+    ships.*,instrument.*
+    from tbl_business_shippingrecords ships left join tbl_business_instrumentinfo instrument
+    on ships.sapNo=instrument.sapNo
+    where ships.id = #{id,jdbcType=INTEGER}
+  </select>
+  <!-- 查找导出记录 -->
+      <select id="queryByListID" resultMap="exportResultMap">
+	   select 
+	    instrument.sapNo as sapNo,instrument.productName as productName,ships.softwareVersion,ships.customer as customer,ships.quantity as quantity,ships.instrumentFuselage as instrumentFuselage,ships.inspectionMan as inspectionMan,ships.shippingDate as shippingDate,ships.comments as comments
+	    from tbl_business_shippingrecords ships left join tbl_business_instrumentinfo instrument
+	    on ships.sapNo=instrument.sapNo
+	    where ships.id in 
+	    <foreach collection="list" item="shipId" index="index"
+				open="(" separator="," close=")">
+				#{shipId}
+			</foreach>
+	  </select>
+	  
+  <select id="queryAllFuselage" resultMap="JoinResultMap">
+		  select 
+		    ships.id,ships.instrumentFuselage,ships.shippingDate,instrument.*
+		    from tbl_business_shippingrecords ships left join tbl_business_instrumentinfo instrument
+		    on ships.sapNo=instrument.sapNo
+  </select>
+  <select id="statisticsShip" resultMap="exportResultMap">
+		select sum(quantity) as quantity, sapNo,instrumentFuselage from tbl_business_shippingrecords 
+		where 
+		 shippingDate &gt;= #{startTime}
+		and 
+		shippingDate &lt;= #{endTime}
+		group by sapNo
+		<!-- select sum(quantity) as quantity, instrument.productName as
+		productName,ships.sapNo from tbl_business_shippingrecords ships
+		left join tbl_business_instrumentinfo instrument on ships.sapNo=instrument.sapNo
+		where 
+		 shippingDate &gt;= #{startTime}
+		and 
+		shippingDate &lt;= #{endTime}
+		group by ships.sapNo, instrument.productName -->
+	</select>
+   <select id="queryRecordCount" resultType="java.lang.Integer">
+   select 
+    count(1)
+    from tbl_business_shippingrecords ships left join tbl_business_instrumentinfo instrument
+    on ships.sapNo=instrument.sapNo
+   <if test="shipKeys != null and shipKeys != ''" >
+      where ( <![CDATA[ ships.sapNo like CONCAT('%',#{shipKeys},'%') ]]> 
+            or  <![CDATA[ ships.customer like CONCAT('%',#{shipKeys},'%')   ]]>
+            or  <![CDATA[ instrument.productName like CONCAT('%',#{shipKeys},'%')  ]]> 
+            or  <![CDATA[ ships.instrumentFuselage like CONCAT('%',#{shipKeys},'%')  ]]> )
+    </if>
+  </select>
+  
+     <select id="queryCustomer" resultType="java.lang.String">
+   select 
+   distinct customer
+    from tbl_business_shippingrecords 
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from tbl_business_shippingrecords
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <!-- 批量删除出货记录 -->
+   <delete id="deleteByListId" parameterType="java.lang.Integer" >
+    delete from tbl_business_shippingrecords
+    where id in 
+     <foreach collection="list" item="shipId" index="index"
+				open="(" separator="," close=")">
+				#{shipId}
+	</foreach>
+  </delete>
+  <insert id="add" useGeneratedKeys="true" keyProperty="id" parameterType="com.dayuan.bean.Shippingrecords" >
+    insert into tbl_business_shippingrecords (id, sapNo, customer, 
+      quantity, instrumentFuselage, inspectionDate, 
+      inspectionMan, shippingDate, updateTime, 
+      comments,softwareVersion)
+    values (#{id,jdbcType=INTEGER}, #{sapNo.sapNo,jdbcType=VARCHAR}, #{customer,jdbcType=VARCHAR}, 
+      #{quantity,jdbcType=INTEGER}, #{instrumentFuselage,jdbcType=VARCHAR}, #{inspectionDate,jdbcType=VARCHAR}, 
+      #{inspectionMan,jdbcType=VARCHAR}, #{shippingDate,jdbcType=VARCHAR}, #{updateTime,jdbcType=TIMESTAMP}, 
+      #{comments,jdbcType=VARCHAR},#{softwareVersion})
+  </insert>
+  <insert id="addBySelective" parameterType="com.dayuan.bean.Shippingrecords" >
+    insert into tbl_business_shippingrecords
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="sapNo != null" >
+        sapNo,
+      </if>
+      <if test="customer != null" >
+        customer,
+      </if>
+      <if test="quantity != null" >
+        quantity,
+      </if>
+      <if test="instrumentFuselage != null" >
+        instrumentFuselage,
+      </if>
+      <if test="inspectionDate != null" >
+        inspectionDate,
+      </if>
+      <if test="inspectionMan != null" >
+        inspectionMan,
+      </if>
+      <if test="shippingDate != null" >
+        shippingDate,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+      <if test="comments != null" >
+        comments,
+      </if>
+       <if test="softwareVersion != null" >
+        softwareVersion,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="sapNo != null" >
+        #{sapNo,jdbcType=VARCHAR},
+      </if>
+      <if test="customer != null" >
+        #{customer,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null" >
+        #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="instrumentFuselage != null" >
+        #{instrumentFuselage,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectionDate != null" >
+        #{inspectionDate,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectionMan != null" >
+        #{inspectionMan,jdbcType=VARCHAR},
+      </if>
+      <if test="shippingDate != null" >
+        #{shippingDate,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="comments != null" >
+        #{comments,jdbcType=VARCHAR},
+      </if>
+         <if test="softwareVersion != null" >
+        softwareVersion,
+      </if>
+    </trim>
+  </insert>
+  <update id="updateBySelective" parameterType="com.dayuan.bean.Shippingrecords" >
+    update tbl_business_shippingrecords
+    <set >
+      <if test="sapNo != null" >
+        sapNo = #{sapNo,jdbcType=VARCHAR},
+      </if>
+      <if test="customer != null" >
+        customer = #{customer,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null" >
+        quantity = #{quantity,jdbcType=INTEGER},
+      </if>
+      <if test="instrumentFuselage != null" >
+        instrumentFuselage = #{instrumentFuselage,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectionDate != null" >
+        inspectionDate = #{inspectionDate,jdbcType=VARCHAR},
+      </if>
+      <if test="inspectionMan != null" >
+        inspectionMan = #{inspectionMan,jdbcType=VARCHAR},
+      </if>
+      <if test="shippingDate != null" >
+        shippingDate = #{shippingDate,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="comments != null" >
+        comments = #{comments,jdbcType=VARCHAR},
+      </if>
+       <if test="softwareVersion != null" >
+        softwareVersion = #{softwareVersion,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateById" parameterType="com.dayuan.bean.Shippingrecords" >
+    update tbl_business_shippingrecords
+    set sapNo = #{sapNo,jdbcType=VARCHAR},
+      customer = #{customer,jdbcType=VARCHAR},
+      quantity = #{quantity,jdbcType=INTEGER},
+      instrumentFuselage = #{instrumentFuselage,jdbcType=VARCHAR},
+      inspectionDate = #{inspectionDate,jdbcType=VARCHAR},
+      inspectionMan = #{inspectionMan,jdbcType=VARCHAR},
+      shippingDate = #{shippingDate,jdbcType=VARCHAR},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      softwareVersion=#{softwareVersion},
+      comments = #{comments,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

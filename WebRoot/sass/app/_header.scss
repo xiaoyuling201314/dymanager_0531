@@ -1,0 +1,85 @@
+
+.header {
+  height: $header-height;
+  background-color: $primary;
+  color: $white;
+  vertical-align: top;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: $zindex-header;
+  width: 100%;
+
+  @include clearfix;
+ 
+  .logo {
+    background: url('../img/header_logo.png') no-repeat;
+    width: $header-logo-width;
+    height: $header-height;
+    float: left;
+  }
+
+  h2 {
+    font-size: 24px;
+    float: left;
+    margin: 0;
+    line-height: $header-height;
+    text-shadow: 0px 2px 4px rgb( 0, 44, 97 );
+    color: $white;
+  }
+  
+  .user-info {
+    &:hover {
+      .info {
+        background-color: darken($primary, 10%);
+        .arrow {
+          transform: rotate(180deg);
+        }
+      }
+      .logout {
+        display: block;
+      }
+    }
+    .info {
+      padding: 0 26px;
+      line-height: $header-height;
+      cursor: pointer;
+      transition: all .35s ease-in-out;
+
+      .avatar {
+        margin-right: 16px;
+
+        i {
+          border-radius: 50%;
+          background-color: $white;
+          color: $primary;
+          padding: 6px;
+        }
+      }
+
+      .arrow {
+        margin-left: 16px;
+        display: inline-block;
+        transition: transform .3s ease-in-out;
+      }
+    }
+    .logout {
+      height: $left-item-height;
+      background-color: $white;
+      border-top: 1px solid $gray-lighter;
+      border-left: 1px solid $gray-lighter;
+      line-height: $left-item-height;
+      text-align: center; 
+      color: $red;
+      cursor: pointer;
+      display: none;
+
+      i {
+        font-size: 26px;
+        vertical-align: middle;
+        margin-right: 20px;
+      }
+    }
+  }
+  
+}

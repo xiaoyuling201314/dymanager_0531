@@ -1,0 +1,44 @@
+.main-content.instruments {
+  table.list {
+    position: relative;
+    td:last-child {
+      color: #6b6b6b;
+    }
+    
+    .gallery {
+      text-align: left;
+      a {
+        display: inline-block;
+        vertical-align: middle;
+        @include size(100px, 62px);
+        padding: 10px;
+        border-right: 1px solid $gray-lighter;
+        text-align: center;
+        img {max-height: 100%;}
+      } 
+    }
+
+    .close {
+      position: absolute;
+      display: block;
+      right: 10px;
+      top: 11px;
+      cursor: pointer;
+
+      i {
+        font-size: 32px;
+      }
+    }
+
+    th.out-date {
+      background-color: #8a8a8a;
+    }
+  }
+  .search-modal {
+    .search {
+      margin-top: 0;
+
+      i {right: 32px;}
+    }
+  }
+}

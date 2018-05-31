@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.CircuitboardDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.dayuan.bean.CircuitboardDetail" >
+  	 <id column="id" property="id" />
+    <result column="circuitId" property="circuitId" jdbcType="INTEGER" />
+    <!-- <result column="sapNo" property="sapNo" jdbcType="VARCHAR" />
+    <result column="completeMachineVersion" property="completeMachineVersion" jdbcType="VARCHAR" /> -->
+    <result column="materielNo" property="materielNo" jdbcType="VARCHAR" />
+    <result column="quantity" property="quantity" jdbcType="INTEGER" />
+    <result column="locationNo" property="locationNo" jdbcType="VARCHAR" />
+    <result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="comments" property="comments" jdbcType="VARCHAR" />
+    
+    </resultMap>
+    
+   <resultMap id="JoinResultMap" type="com.dayuan.bean.CircuitboardDetail" >
+ 	 <id column="id" property="id" />
+ 	<result column="circuitId" property="circuitId" jdbcType="INTEGER" />
+   <result column="quantity" property="quantity" jdbcType="INTEGER" />
+    <result column="locationNo" property="locationNo" jdbcType="VARCHAR" />
+    <result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="comments" property="comments" jdbcType="VARCHAR" />
+    <association property="materielNo" column="materielNo" javaType="com.dayuan.bean.Materiel" resultMap="com.dayuan.dao.MaterielMapper.JoinMaterielMaper"/>
+   
+    </resultMap>
+    
+    <resultMap id="exportResultMap" type="com.dayuan.bean.ExportCircuitBoard" >
+	    <result column="materielNo" property="materielNo" />
+	    <result column="materielName" property="materielName" />
+	    <result column="modelSpecification" property="modelSpecification" />
+	    <result column="footprint"  property="footprint" />
+	    <result column="locationNo" property="locationNo" jdbcType="VARCHAR" />
+	    <result column="quantity" property="quantity" jdbcType="INTEGER" />
+	    <result column="comments" property="comments" jdbcType="VARCHAR" />
+    </resultMap>
+    
+  <sql id="Base_Column_List" >
+   id, circuitId, materielNo, quantity,locationNo,updateTime,comments
+  </sql>
+  
+  <select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_business_circuitboarddetail
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="queryByBoardId" resultMap="JoinResultMap" parameterType="java.lang.Integer" >
+   select 
+    cir.*,ma.*,t.*
+    from tbl_business_circuitboarddetail cir 
+    left join tbl_business_materiel ma on cir.materielNo=ma.materielNo
+     join tbl_business_materietype t on ma.materielTypeId=t.materielTypeId
+    where cir.circuitId = #{cirId,jdbcType=INTEGER} 
+     <if test="keys != null" >
+         and (<![CDATA[ cir.materielNo like CONCAT('%',#{keys},'%')  ]]>
+         or <![CDATA[ ma.materielName like CONCAT('%',#{keys},'%')  ]]>)
+      </if>
+  ORDER BY cir.updateTime desc  LIMIT #{curPage},#{pageSize} 
+  </select>
+   <select id="queryRecordCount" resultType="java.lang.Integer">
+   select 
+   count(1)
+    from tbl_business_circuitboarddetail cir 
+    left join tbl_business_materiel ma on cir.materielNo=ma.materielNo
+    where cir.circuitId = #{cirId,jdbcType=INTEGER} 
+     <if test="keys != null" >
+         and (<![CDATA[ cir.materielNo like CONCAT('%',#{keys},'%')  ]]>
+         or <![CDATA[ ma.materielName like CONCAT('%',#{keys},'%')  ]]>)
+      </if>
+  </select>
+  
+   <select id="queryAllByBoardId" resultType="java.lang.String" parameterType="java.lang.Integer" >
+	    select 
+	 	 cir.materielNo
+	    from tbl_business_circuitboarddetail cir 
+	    where circuitId = #{cirId,jdbcType=INTEGER}   ORDER BY updateTime desc 
+  </select>
+  
+<!--    <select id="queryBySapNoList" resultMap="exportResultMap">
+ 	select m.materielNo as materielNo , m.materielName as materielName,
+ 	 m.modelSpecification as modelSpecification, m.footprint as footprint, cird.locationNo as locationNo,cird.quantity as quantity, cird.comments as comment 
+ 	 from tbl_business_circuitboarddetail  cird left join tbl_business_materiel m on cird.materielNo=m.materielNo 
+    where cird.materielNo in 
+     <foreach collection="list" item="materielNo" index="index" open="(" separator="," close=")" >
+    #{materielNo}
+    </foreach>
+    ORDER BY cird.updateTime desc
+  </select> -->
+  
+     <select id="queryByCircuitIdNoList" resultMap="exportResultMap">
+ 	select m.materielNo as materielNo , m.materielName as materielName,
+ 	 m.modelSpecification as modelSpecification, m.footprint as footprint, cird.locationNo as locationNo,cird.quantity as quantity, cird.comments as comment 
+ 	 from tbl_business_circuitboarddetail  cird left join tbl_business_materiel m on cird.materielNo=m.materielNo 
+    where cird.circuitId= #{cirId}
+    ORDER BY cird.updateTime desc
+  </select>
+  
+  <delete id="deleteById" parameterType="java.lang.Integer" >
+    delete from tbl_business_circuitboarddetail
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="add" useGeneratedKeys="true" keyProperty="id"  parameterType="com.dayuan.bean.CircuitboardDetail" >
+     insert into tbl_business_circuitboarddetail (circuitId, materielNo, quantity,locationNo,updateTime,comments
+      )
+    values ( #{circuitId,jdbcType=INTEGER},  #{materielNo.materielNo,jdbcType=VARCHAR}, #{quantity,jdbcType=INTEGER}, #{locationNo,jdbcType=VARCHAR},#{updateTime,jdbcType=VARCHAR}, #{comments,jdbcType=VARCHAR}
+      )
+  </insert>
+  
+    <!-- 批量插入数据 
+   <insert id="addList" useGeneratedKeys="true" keyProperty="id" parameterType="List" >
+    insert into tbl_business_circuitboarddetail (circuitId, materielNo
+      )
+    values
+      <foreach collection="list" item="cirdetail" index="index" separator=",">
+      (#{cirdetail.circuitId.id}, #{cirdetail.materielNo.materielNo})
+      </foreach>
+      </insert>-->
+  
+   <insert id="addList"   parameterType="java.util.HashMap" >
+    <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.Integer">
+    select LAST_INSERT_ID()
+    </selectKey>
+     insert into tbl_business_circuitboarddetail (id,circuitId, materielNo,updateTime
+      )
+    values
+     <foreach collection="list" item="cirdetail" index="index" separator=",">
+     (#{cirdetail.id,jdbcType=INTEGER}, #{cirdetail.circuitId,jdbcType=INTEGER},  #{cirdetail.materielNo.materielNo,jdbcType=VARCHAR},#{cirdetail.updateTime}
+      )<!-- #{cirdetail.circuitId.id}, #{cirdetail.materielNo.materielNo} -->
+      </foreach>
+     
+  </insert>
+  
+  
+  <insert id="addBySelective" useGeneratedKeys="true" keyProperty="id" parameterType="com.dayuan.bean.CircuitboardDetail" >
+    insert into tbl_business_circuitboarddetail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="circuitId != null" >
+        circuitId,
+      </if>
+    
+      <if test="materielNo != null" >
+        materielNo,
+      </if>
+      <if test="quantity != null" >
+        quantity,
+      </if>
+      <if test="locationNo != null" >
+        locationNo,
+      </if>
+        <if test="updateTime != null" >
+        updateTime,
+      </if>
+      <if test="comments != null" >
+        comments,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="circuitId != null" >
+        #{circuitId,jdbcType=INTEGER},
+      </if>
+  
+      <if test="materielNo != null" >
+        #{materielNo,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null" >
+        #{quantity,jdbcType=INTEGER},
+      </if>
+       <if test="locationNo != null" >
+        #{locationNo},
+      </if>
+       <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="comments != null" >
+        #{comments},
+      </if>
+    </trim>
+  </insert>
+ 
+  <update id="updateBySelective" parameterType="com.dayuan.bean.CircuitboardDetail" >
+     update tbl_business_circuitboarddetail
+    <set >
+      <if test="locationNo != null" >
+        locationNo = #{locationNo,jdbcType=VARCHAR},
+      </if>
+      <if test="quantity != null" >
+        quantity = #{quantity,jdbcType=INTEGER},
+      </if>
+       <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=DATE},
+      </if>
+        <if test="comments != null" >
+        comments = #{comments,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+ 
+  <update id="updateById" parameterType="com.dayuan.bean.CircuitboardDetail" >
+update tbl_business_circuitboarddetail
+    set circuitId = #{circuitId,jdbcType=INTEGER},
+      materielNo = #{materielNo,jdbcType=VARCHAR},
+      quantity = #{quantity,jdbcType=INTEGER},
+      locationNo=#{locationNo},
+      updateTime = #{updateTime,jdbcType=DATE},
+       comments=#{comments},
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+</mapper>

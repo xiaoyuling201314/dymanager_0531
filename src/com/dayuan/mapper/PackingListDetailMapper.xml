@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.PackingListDetailMapper">
+	<resultMap id="BaseResultMap" type="com.dayuan.bean.PackingListDetail">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="packId" property="packId" jdbcType="INTEGER" />
+		<result column="quantity" property="quantity" jdbcType="INTEGER" />
+		<result column="comments" property="comments" jdbcType="VARCHAR" />
+		<result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+		<association property="materielNo"
+			resultMap="com.dayuan.dao.MaterielMapper.BaseResultMap" />
+	</resultMap>
+
+	<resultMap id="JoinResultMap" type="com.dayuan.bean.PackingListDetail">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="packId" property="packId" jdbcType="INTEGER" />
+		<result column="quantity" property="quantity" jdbcType="INTEGER" />
+		<result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+		<result column="comments" property="comments" jdbcType="VARCHAR" />
+		<association property="materielNo" column="materielNo"
+			javaType="com.dayuan.bean.Materiel" resultMap="com.dayuan.dao.MaterielMapper.JoinMaterielMaper" />
+	</resultMap>
+
+	<resultMap id="exportResultMap" type="com.dayuan.bean.ExportCircuitBoard">
+		<result column="materielNo" property="materielNo" />
+		<result column="materielName" property="materielName" />
+		<result column="modelSpecification" property="modelSpecification" />
+		<result column="footprint" property="footprint" />
+		<result column="quantity" property="quantity" jdbcType="INTEGER" />
+		<result column="comments" property="comments" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<sql id="Base_Column_List">
+		id, packId, materielNo, quantity,updateTime,comments
+	</sql>
+
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from tbl_business_packinglistdetail
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+	<select id="queryByBoardId" resultMap="JoinResultMap">
+		select
+		pack.*,ma.*,t.*
+		from tbl_business_packinglistdetail pack
+		left join tbl_business_materiel ma on pack.materielNo=ma.materielNo
+		join tbl_business_materietype t on ma.materielTypeId=t.materielTypeId
+		where pack.packId = #{packId,jdbcType=INTEGER}
+		<if test="keys != null">
+			and (<![CDATA[ ma.materielNo like CONCAT('%',#{keys},'%')  ]]>
+			or <![CDATA[ ma.materielName like CONCAT('%',#{keys},'%')  ]]>)
+		</if>
+		ORDER BY pack.updateTime desc LIMIT #{curPage},#{pageSize}
+	</select>
+	<select id="queryRecordCount" resultType="java.lang.Integer">
+		select
+		count(1)
+		from tbl_business_packinglistdetail pack
+		left join tbl_business_materiel ma on pack.materielNo=ma.materielNo
+		where pack.packId = #{packId,jdbcType=INTEGER}
+		<if test="keys != null">
+			and (<![CDATA[ pack.materielNo like CONCAT('%',#{keys},'%')  ]]>
+			or <![CDATA[ ma.materielName like CONCAT('%',#{keys},'%')  ]]>)
+		</if>
+	</select>
+
+	<select id="queryAllByBoardId" resultType="java.lang.String"
+		parameterType="java.lang.Integer">
+		select
+		pack.materielNo
+		from tbl_business_packinglistdetail pack
+		where packId = #{packId,jdbcType=INTEGER} ORDER BY pack.updateTime desc
+	</select>
+	<!-- 
+		<select id="queryBySapNoList" resultMap="exportResultMap">
+			select m.materielNo as materielNo , m.materielName as materielName,
+			m.modelSpecification as modelSpecification, m.footprint as
+			footprint,pack.quantity as quantity, pack.comments as comment
+			from tbl_business_packinglistdetail pack left join tbl_business_materiel m
+			on pack.materielNo=m.materielNo
+			where pack.materielNo in
+			<foreach collection="list" item="materielNo" index="index"
+				open="(" separator="," close=")">
+				#{materielNo}
+			</foreach>
+			ORDER BY pack.updateTime desc
+		</select> -->
+		
+	<select id="queryBypackIdList" resultMap="exportResultMap">
+		select m.materielNo as materielNo , m.materielName as materielName,
+		m.modelSpecification as modelSpecification, m.footprint as
+		footprint,pack.quantity as quantity, pack.comments as comment
+		from tbl_business_packinglistdetail pack left join tbl_business_materiel m
+		on pack.materielNo=m.materielNo
+		where pack.packId=#{packId}
+		ORDER BY pack.updateTime desc
+	</select>
+	<insert id="addList" useGeneratedKeys="true" keyProperty="id"
+		parameterType="java.util.HashMap">
+		insert into tbl_business_packinglistdetail (packId,
+		materielNo,updateTime,comments
+		)
+		values
+		<foreach collection="list" item="packDetail" index="index"
+			separator=",">
+			(#{packDetail.packId,jdbcType=INTEGER},
+			#{packDetail.materielNo.materielNo,jdbcType=VARCHAR},#{packDetail.updateTime}#{packDetail.comments,jdbcType=VARCHAR}
+			)<!-- #{cirdetail.circuitId.id}, #{cirdetail.materielNo.materielNo} -->
+		</foreach>
+
+	</insert>
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from tbl_business_packinglistdetail
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="add" useGeneratedKeys="true" keyProperty="id"
+		parameterType="com.dayuan.bean.PackingListDetail">
+		insert into tbl_business_packinglistdetail (packId, materielNo,
+		quantity,updateTime,comments)
+		values ( #{packId,jdbcType=INTEGER},
+		#{materielNo.materielNo,jdbcType=VARCHAR},
+		#{quantity,jdbcType=INTEGER},#{updateTime},#{comments,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<insert id="addBySelective" parameterType="com.dayuan.bean.PackingListDetail">
+		insert into tbl_business_packinglistdetail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="packId != null">
+				packId,
+			</if>
+			<if test="materielNo != null">
+				materielNo,
+			</if>
+			<if test="quantity != null">
+				quantity,
+			</if>
+			<if test="updateTime != null">
+				updateTime,
+			</if>
+			<if test="comments != null">
+				comments,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="packId != null">
+				#{packId,jdbcType=INTEGER},
+			</if>
+			<if test="materielNo != null">
+				#{materielNo,jdbcType=VARCHAR},
+			</if>
+			<if test="quantity != null">
+				#{quantity,jdbcType=INTEGER},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=DATE},
+			</if>
+			<if test="comments != null">
+				#{comments,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateBySelective" parameterType="com.dayuan.bean.PackingListDetail">
+		update tbl_business_packinglistdetail
+		<set>
+			<if test="quantity != null">
+				quantity = #{quantity,jdbcType=INTEGER},
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime,jdbcType=DATE},
+			</if>
+			<if test="comments != null">
+				comments = #{comments,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<update id="updateById" parameterType="com.dayuan.bean.PackingListDetail">
+		update tbl_business_packinglistdetail
+		set packId = #{packId,jdbcType=INTEGER},
+		materielNo = #{materielNo,jdbcType=VARCHAR},
+		quantity = #{quantity,jdbcType=INTEGER},
+		updateTime = #{updateTime,jdbcType=DATE},
+		comments = #{comments,jdbcType=VARCHAR},
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+</mapper>

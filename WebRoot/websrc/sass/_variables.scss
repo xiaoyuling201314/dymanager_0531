@@ -1,0 +1,208 @@
+
+// ============================================================================
+// Colors 颜色
+// ============================================================================
+$black: #000 !default;
+$white: #fff !default;
+
+$dark: #333 !default; // Primary text
+$gray: #525252 !default;  // Secondary text
+$gray-light: #adadad !default;  // Disabled text, hint text, and icons
+$gray-lighter: #e6e6e6 !default;  // Dividers
+
+$primary: #288bff !default;
+$orange: #dcb002 !default;
+$green: #5cb85c !default;
+$blue: #4a9dff !default;
+$blue-light: #00acee !default;
+$red: #d94642 !default;
+$cyan: #00c2d0 !default;
+
+$colorful: (
+  primary: #288bff,
+  green: #5cb85c,
+  red: #d94642,
+  blue: #4a9dff,
+  orange: #dcb002
+) !default;
+
+$link: $primary !default;
+
+
+// ============================================================================
+// Typogryphy 字体排版
+// ============================================================================
+$body-color: $dark !default;
+$body-bg: #f5f5f5 !default;
+
+$font-family-sans-serif: "Segoe UI", "Lucida Grande", "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", sans-serif !default;
+$font-family-serif: "Times New Roman", Times, serif !default;
+$font-family-code: Menlo, Monaco, Consolas, "Courier New", monospace !default;
+$font-family-base: $font-family-sans-serif !default;
+
+$font-size-root: 16px !default;
+
+$font-size-xs: 10px !default;
+$font-size-lg: 20px !default;
+$font-size-base: 16px !default;
+$font-size-md: 14px !default;
+$font-size-sm: 12px !default;
+
+$font-size-h1: 40px !default;
+$font-size-h2: 32px !default;
+$font-size-h3: 28px !default;
+$font-size-h4: 24px !default;
+$font-size-h5: 20px !default;
+$font-size-h6: 16px !default;
+
+$font-weight-heading: 400 !default;
+
+$line-height: 1.5 !default;
+
+
+// ============================================================================
+// Dividers 分隔线
+// ============================================================================
+
+$divider-color: $gray-lighter !default;
+$divider-width: 1px !default;
+
+
+// ============================================================================
+// Grid 栅格
+// ============================================================================
+$grid-gutter-width: 30px !default;
+$grid-columns: 12 !default;
+
+$grid-breakpoints: (
+  xs: 0,  // Extra small screen / phone
+  sm: 544px,  // Small screen / phone
+  md: 768px,  // Medium screen / tablet
+  lg: 992px,  // Large screen / desktop
+  xl: 1200px  // Extra large screen / wide desktop
+) !default;
+
+$container-max-widths: (
+  sm: 544px,
+  md: 720px,
+  lg: 960px,
+  xl: 1200px
+) !default;
+
+
+// ============================================================================
+// Form 表单
+// ============================================================================
+$form-cell-margin: 20px !default;
+$form-label-color: $gray-light !default;
+
+$input-padding-x: 12px !default;
+$input-padding-y: 6px !default;
+
+$input-radius: 4px !default;
+
+$input-addon-bg: $gray-lighter !default;
+$input-addon-color: $gray !default;
+
+$input-placeholder-color: $gray-light !default;
+$input-disabled-color: $gray-light !default;
+$input-disabled-bg: $gray-lighter !default;
+
+$input-border-color: #d1d1d1 !default;
+
+
+// ============================================================================
+// Button 按钮
+// ============================================================================
+
+$btn-border-width: 1px !default;
+$btn-padding-x: 16px !default;
+$btn-padding-y: 6px !default;
+$btn-radius: 6px !default;
+$btn-min-width: 88px !default;
+
+$btn-default-bg: $white !default;
+$btn-hover-bg: $btn-default-bg !default;
+$btn-focus-bg: $gray-lighter !default;
+$btn-active-bg: rgba(158,158,158,0.4) !default;
+
+
+// ============================================================================
+// Selection Controls 选择控制
+// ============================================================================
+
+$selection-disabled-color: rgba(0, 0, 0, .26) !default;
+$selection-border-color: $gray-light !default;
+
+$checkbox-width: 20px !default;
+$checkbox-border-width: 2px !default;
+$checkbox-radius: 2px !default;
+
+$switch-radius: 16px !default;
+$switch-bg: rgba(0, 0, 0, .26) !default;
+$switch-margin: 0 16px !default;
+$switch-width: 34px !default;
+$switch-height: 14px !default;
+
+$switch-ios-circle-width: 24px !default;
+
+
+// ============================================================================
+// Tables 表格
+// ============================================================================
+$table-border: 2px solid #e5e5e5 !default;
+$table-th-bg: #2dc3e8 !default;
+$table-th-color: $white !default;
+$table-th-border: 1px solid $white !default;
+$table-td-height: 52px !default;
+$table-td-border: 1px solid #ebebeb !default;
+
+
+// ============================================================================
+// Pagination 分页
+// ============================================================================
+$pagi-item-padding: 6px 12px !default;
+$pagi-item-border: 1px solid #c1c1c1 !default;
+$pagi-item-radius: 4px !default;
+
+
+// ============================================================================
+// Modal 模态框
+// ============================================================================
+$modal-title-font-size: 18px !default;
+$modal-content-padding: 20px 40px !default;
+$modal-action-padding: 8px !default;
+$modal-radius: 4px !default;
+
+
+// ============================================================================
+// Alert 提示框
+// ============================================================================
+$alerty-title-font-size: 20px !default;
+$alerty-title-padding: 24px 24px 20px !default;
+$alerty-content-padding: 24px !default;
+$alerty-action-padding: 8px !default;
+$alerty-radius: 2px !default;
+
+$alerty-prompt-marginTop: 16px;
+$alerty-prompt-height: 36px;
+
+$alerty-toasts-height: 48px;
+
+
+// ============================================================================
+// Page Layout 页面布局
+// ============================================================================
+$header-height: 72px !default;
+$header-logo-width: 91px !default;
+
+$left-width: 294px !default;
+$left-item-height: 78px !default;
+
+$zindex-header: 99 !default;
+$zindex-left: 98 !default;
+$zindex-main: 97 !default;
+$zindex-modal-overlay: 100 !default;
+$zindex-modal: 101 !default;
+$zindex-alerty: 106 !default;
+

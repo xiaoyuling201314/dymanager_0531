@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.SysUserMapper" >
+  <resultMap id="BaseResultMap" type="com.dayuan.bean.SysUser" >
+    <id column="userName" property="userName" jdbcType="VARCHAR" />
+    <result column="password" property="password" jdbcType="VARCHAR" />
+    <result column="name" property="name" jdbcType="VARCHAR" />
+    <result column="email" property="email" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="department" property="department" jdbcType="VARCHAR" />
+    <result column="superAdmin" property="superAdmin" jdbcType="INTEGER" />
+    <result column="rightList" property="rightList" jdbcType="VARCHAR" />
+    <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="rightList" property="rightList" />
+    <result column="comment" property="comment" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    userName, password, name, email, state, department, superAdmin,rightList, phone, updateTime, 
+    comment
+  </sql>
+  
+  <select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from sys_user
+    where userName = #{userName,jdbcType=VARCHAR}
+  </select>
+
+	<select id="userLogin" resultMap="BaseResultMap" flushCache="true">
+	select 
+    <include refid="Base_Column_List" />
+    from sys_user
+    where userName = #{userName} and password=#{password}
+	</select>
+  
+  <select id="queryList" resultMap="BaseResultMap">
+  select 
+    <include refid="Base_Column_List" />
+    from sys_user
+    where superAdmin=0
+     <if test="keys != null" >
+    and ( <![CDATA[ userName like CONCAT('%',#{keys},'%')  ]]> 
+    or <![CDATA[ name like CONCAT('%',#{keys},'%')  ]]>
+    or <![CDATA[ department like CONCAT('%',#{keys},'%')  ]]> )
+     </if>
+    ORDER BY updateTime desc LIMIT #{curPage},#{pageSize}
+  </select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from sys_user
+    where userName = #{userName,jdbcType=VARCHAR}
+  </delete>
+  <select id="queryRecordCount" resultType="java.lang.Integer">
+   select 
+    count(1)
+    from sys_user
+   <if test="keys != null" >
+    where <![CDATA[ userName like CONCAT('%',#{keys},'%')  ]]> 
+    or <![CDATA[ email like CONCAT('%',#{keys},'%')  ]]>
+    or <![CDATA[ name like CONCAT('%',#{keys},'%')  ]]>
+     </if>
+  </select>
+  <select id="queryAll" resultMap="BaseResultMap">
+   select 
+    <include refid="Base_Column_List" />
+    from sys_user
+   </select>
+  <insert id="add" parameterType="com.dayuan.bean.SysUser" >
+    insert into sys_user (userName, password, name, 
+      email,department, 
+      superAdmin,rightList, phone, updateTime, 
+      comment)
+    values (#{userName}, #{password}, #{name}, 
+      #{email}, #{department}, 
+      #{superAdmin}, #{rightList}, #{phone}, #{updateTime}, 
+      #{comment,jdbcType=VARCHAR})
+  </insert>
+  
+  <insert id="addBySelective" parameterType="com.dayuan.bean.SysUser" >
+    insert into sys_user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userName != null" >
+        userName,
+      </if>
+      <if test="password != null" >
+        password,
+      </if>
+      <if test="name != null" >
+        name,
+      </if>
+      <if test="email != null" >
+        email,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="department != null" >
+        department,
+      </if>
+      <if test="superAdmin != null" >
+        superAdmin,
+      </if>
+       <if test="rightList != null" >
+        rightList,
+      </if>
+      <if test="phone != null" >
+        phone,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+      <if test="comment != null" >
+        comment,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userName != null" >
+        #{userName,jdbcType=VARCHAR},
+      </if>
+      <if test="password != null" >
+        #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="department != null" >
+        #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="superAdmin != null" >
+        #{superAdmin,jdbcType=INTEGER},
+      </if>
+       <if test="rightList != null" >
+        rightList,
+      </if>
+      <if test="phone != null" >
+        #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null" >
+        #{comment,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateBySelective" parameterType="com.dayuan.bean.SysUser" >
+    update sys_user
+    <set >
+      <if test="password != null" >
+        password = #{password,jdbcType=VARCHAR},
+      </if>
+      <if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="email != null" >
+        email = #{email,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="department != null" >
+        department = #{department,jdbcType=VARCHAR},
+      </if>
+      <if test="superAdmin != null" >
+        superAdmin = #{superAdmin,jdbcType=INTEGER},
+      </if>
+       <if test="rightList != null" >
+          rightList = #{rightList,jdbcType=VARCHAR},
+      </if>
+      <if test="phone != null" >
+        phone = #{phone,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=VARCHAR},
+      </if>
+      <if test="comment != null" >
+        comment = #{comment,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where userName = #{userName,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateById" parameterType="com.dayuan.bean.SysUser" >
+    update sys_user
+    set password = #{password,jdbcType=VARCHAR},
+      name = #{name,jdbcType=VARCHAR},
+      email = #{email,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      department = #{department,jdbcType=VARCHAR},
+      superAdmin = #{superAdmin,jdbcType=INTEGER},
+      rightList = #{rightList,jdbcType=VARCHAR},
+      phone = #{phone,jdbcType=VARCHAR},
+      updateTime = #{updateTime,jdbcType=VARCHAR},
+      comment = #{comment,jdbcType=VARCHAR}
+    where userName = #{userName,jdbcType=VARCHAR}
+  </update>
+  
+  
+</mapper>

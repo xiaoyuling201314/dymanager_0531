@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.MaterielMapper" >
+  <resultMap id="BaseResultMap" type="com.dayuan.bean.Materiel" >
+    <id column="materielNo" property="materielNo"  />
+    <result column="materielName" property="materielName" />
+   <!--  <result column="materielTypeId" property="materielTypeId" jdbcType="INTEGER" /> -->
+    <result column="modelSpecification" property="modelSpecification" />
+    <result column="footprint" property="footprint"  />
+    <result column="picture" property="picture"  />
+    <result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="comment" property="comment"  />
+     <association property="materielTypeId" column="materielTypeId" javaType="com.dayuan.bean.MaterieType" resultMap="com.dayuan.dao.MaterieTypeMapper.BaseResultMap"/>
+     <!-- 一对多配置 -->
+  </resultMap>
+  
+  
+    <resultMap id="JoinMaterielMaper" type="com.dayuan.bean.Materiel" >
+    <id column="materielNo" property="materielNo" />
+    <result column="materielName" property="materielName"  />
+    <result column="modelSpecification" property="modelSpecification" />
+    <result column="footprint" property="footprint" />
+    <result column="picture" property="picture"/>
+    <result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="comment" property="comment"  />
+      <result column="mtypeName" property="mtypeName" />
+    <association property="materielTypeId" column="materielTypeId" javaType="com.dayuan.bean.MaterieType" resultMap="com.dayuan.dao.MaterieTypeMapper.BaseResultMap"/>
+      <!-- 一对多配置-->
+     <collection property="drawings" ofType="com.dayuan.bean.MaterielDrawings" resultMap="com.dayuan.dao.MaterielDrawingsMapper.BaseResultMap"/>   
+  </resultMap>
+  <sql id="Base_Column_List" >
+    materielNo, materielName, materielTypeId, modelSpecification, footprint, picture,updateTime, comment
+  </sql>
+  
+  <select id="queryById" resultMap="BaseResultMap" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_business_materiel
+    where materielNo=#{id}
+  
+  </select>
+   <!-- 分页查询以及搜索查询物料信息 queryByMaterielKeys-->
+  <select id="queryByMaterielKeys" resultMap="JoinMaterielMaper">
+    select 
+    m.*,t.*
+    from tbl_business_materiel m  
+    left join tbl_business_materietype t on m.materielTypeId=t.materielTypeId
+     <if test="keys != null" >
+    where <![CDATA[m.materielNo like CONCAT('%',#{keys},'%')]]> 
+    or <![CDATA[m.materielName like CONCAT('%',#{keys},'%')]]>
+     or <![CDATA[t.materielTypeName like CONCAT('%',#{keys},'%')]]>
+    </if>
+     ORDER BY m.updateTime  desc
+  </select>
+  
+  <!-- 分页查询以及搜索查询物料信息 queryByMaterielKeys-->
+  <select id="queryList" resultMap="JoinMaterielMaper">
+    select 
+    m.*,t.*
+    from tbl_business_materiel m  
+    left join tbl_business_materietype t on m.materielTypeId=t.materielTypeId
+   <!--,d.*  left join tbl_business_materieldrawings d on m.materielNo=d.materielNo -->
+     <if test="keys != null" >
+    where <![CDATA[m.materielNo like CONCAT('%',#{keys},'%')]]> 
+    or <![CDATA[m.materielName like CONCAT('%',#{keys},'%')]]>
+     or <![CDATA[t.materielTypeName like CONCAT('%',#{keys},'%')]]>
+    </if>
+     ORDER BY m.updateTime desc LIMIT #{curPage},#{pageSize} 
+  </select>
+  <!-- 查询所有的物料信息 -->
+   <select id="queryAll" resultMap="JoinMaterielMaper">
+  select 
+    m.*,t.*,t.materielTypeName as mtypeName
+    from tbl_business_materiel m  
+    left join tbl_business_materietype t on m.materielTypeId=t.materielTypeId
+    <!--  inner join tbl_business_materieldrawings d on m.materielNo=d.materielNo 
+    <if test="keys != null" >
+    where <![CDATA[m.materielNo like CONCAT('%',#{keys},'%')]]> 
+    or <![CDATA[m.materielName like CONCAT('%',#{keys},'%')]]>
+    </if>-->
+  </select>
+  <!-- 查询所有的物料编号信息 -->
+  <select id="queryAllMaterNo" resultType="java.lang.String">
+  select 
+    materielNo
+    from tbl_business_materiel   
+  </select>
+  
+  <select id="queryRecordCount" resultType="java.lang.Integer">
+   select 
+    count(1)
+    from tbl_business_materiel m
+    left join tbl_business_materietype t on m.materielTypeId=t.materielTypeId
+   <if test="keys != null" >
+    where <![CDATA[ m.materielNo like CONCAT('%',#{keys},'%')  ]]> 
+    or <![CDATA[ m.materielName like CONCAT('%',#{keys},'%')  ]]>
+    or <![CDATA[ t.materielTypeName like CONCAT('%',#{keys},'%')  ]]>
+     </if>
+  </select>
+  
+   <select id="queryBySapNoList" resultMap="JoinMaterielMaper">
+  <!--  select 
+    m.*,t.*
+    from tbl_business_materiel m  
+    left join tbl_business_materietype t on m.materielTypeId=t.materielTypeId
+    where m.materielNo in  -->
+    select m.* ,cird.*,t.* from tbl_business_circuitboarddetail  cird 
+ 	 join tbl_business_materiel m on cird.materielNo=m.materielNo 
+ 	 join tbl_business_materietype t  on m.materielTypeId=t.materielTypeId
+    where cird.materielNo in
+     <foreach collection="list" item="materielNo" index="index" open="(" separator="," close=")" >
+    #{materielNo}
+    </foreach>
+     ORDER BY m.updateTime desc
+  </select>
+  
+   <delete id="deleteById" parameterType="java.lang.String" >
+    delete from tbl_business_materiel
+    where materielNo = #{materielNo,jdbcType=VARCHAR}
+  </delete> 
+  <!-- 关联删除物料和图纸信息
+   <delete id="deleteById" parameterType="java.lang.String" >
+    delete d,m from  tbl_business_materieldrawings d,tbl_business_materiel m
+    where m.materielNo=d.materielNo and  materielNo = #{materielNo}
+  </delete> -->
+  <insert id="add" parameterType="com.dayuan.bean.Materiel" >
+    insert into tbl_business_materiel (materielNo, materielName, materielTypeId, 
+      modelSpecification, footprint, picture, updateTime,
+      comment)
+    values (#{materielNo,jdbcType=VARCHAR}, #{materielName,jdbcType=VARCHAR}, #{materielTypeId.materielTypeId,jdbcType=INTEGER}, 
+      #{modelSpecification,jdbcType=VARCHAR}, #{footprint,jdbcType=VARCHAR}, #{picture,jdbcType=VARCHAR}, #{updateTime},
+      #{comment,jdbcType=VARCHAR})
+  </insert>
+  
+    <!-- 批量插入数据 -->
+   <insert id="addList"  parameterType="List" >
+    insert into tbl_business_materiel (materielNo, materielName, materielTypeId, 
+      modelSpecification, footprint, picture, updateTime,
+      comment) values
+      <foreach collection="list" item="materiel" index="index" separator=",">
+      (#{materiel.materielNo}, #{materiel.materielName}, #{materiel.materielTypeId.materielTypeId}, #{materiel.modelSpecification},
+       #{materiel.footprint}, #{materiel.picture},#{materiel.updateTime}, #{materiel.comment}
+      )
+      </foreach>
+  </insert>
+  <insert id="addBySelective" parameterType="com.dayuan.bean.Materiel" >
+    insert into tbl_business_materiel
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="materielNo != null" >
+        materielNo,
+      </if>
+      <if test="materielName != null" >
+        materielName,
+      </if>
+      <if test="materielTypeId != null" >
+        materielTypeId,
+      </if>
+      <if test="modelSpecification != null" >
+        modelSpecification,
+      </if>
+      <if test="footprint != null" >
+        footprint,
+      </if>
+      <if test="picture != null" >
+        picture,
+      </if>
+       <if test="updateTime != null" >
+        updateTime,
+      </if>
+      <if test="comment != null" >
+        comment,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="materielNo != null" >
+        #{materielNo,jdbcType=VARCHAR},
+      </if>
+      <if test="materielName != null" >
+        #{materielName,jdbcType=VARCHAR},
+      </if>
+      <if test="materielTypeId != null" >
+        #{materielTypeId.materielTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="modelSpecification != null" >
+        #{modelSpecification,jdbcType=VARCHAR},
+      </if>
+      <if test="footprint != null" >
+        #{footprint,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null" >
+        #{picture,jdbcType=VARCHAR},
+      </if>
+        <if test="updateTime != null" >
+        #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="comment != null" >
+        #{comment,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  
+  <update id="updateBySelective" parameterType="com.dayuan.bean.Materiel" >
+    update tbl_business_materiel
+    <set >
+      <if test="materielName != null" >
+        materielName = #{materielName,jdbcType=VARCHAR},
+      </if>
+      <if test="materielTypeId != null" >
+        materielTypeId = #{materielTypeId.materielTypeId,jdbcType=INTEGER},
+      </if>
+      <if test="modelSpecification != null" >
+        modelSpecification = #{modelSpecification,jdbcType=VARCHAR},
+      </if>
+      <if test="footprint != null" >
+        footprint = #{footprint,jdbcType=VARCHAR},
+      </if>
+      <if test="picture != null" >
+        picture = #{picture,jdbcType=VARCHAR},
+      </if>
+       <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=DATE},
+      </if>
+      <if test="comment != null" >
+        comment = #{comment,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where materielNo = #{materielNo,jdbcType=VARCHAR}
+  </update>
+ 
+  <update id="updateById" parameterType="com.dayuan.bean.Materiel" >
+    update tbl_business_materiel
+    set materielName = #{materielName,jdbcType=VARCHAR},
+      materielTypeId = #{materielTypeId.materielTypeId,jdbcType=INTEGER},
+      modelSpecification = #{modelSpecification,jdbcType=VARCHAR},
+      footprint = #{footprint,jdbcType=VARCHAR},
+      picture = #{picture,jdbcType=VARCHAR},
+       updateTime = #{updateTime,jdbcType=DATE},
+      comment = #{comment,jdbcType=VARCHAR}
+    where materielNo = #{materielNo,jdbcType=VARCHAR}
+  </update>
+
+</mapper>

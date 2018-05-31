@@ -1,0 +1,34 @@
+
+.table {
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
+
+  &.active {
+    tbody {border: 1px solid #a8d0ff;}
+  }
+
+  &.inactive {
+    th {background-color: #8a8a8a;}
+    tbody {border: 1px solid #ccc;}
+  }
+
+  th {
+    background-color: $table-th-bg;
+    color: $table-th-color;
+    height: $table-td-height;
+    font-weight: normal;
+    vertical-align: middle;
+    text-align: center;
+    border-right: $table-th-border;
+    &:last-child  {border: none;}
+  }
+
+  td {
+    height: $table-td-height;
+    background-color: $white;
+    border: $table-td-border;
+    font-size: 14px;
+  }
+
+}

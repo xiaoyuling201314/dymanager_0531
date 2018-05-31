@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.CircuitboardMapper">
+	<resultMap id="BaseResultMap" type="com.dayuan.bean.Circuitboard">
+		<id column="id" property="id" />
+		<result column="sapNo" property="sapNo" jdbcType="VARCHAR" />
+		<result column="circuitBoardVersion" property="circuitBoardVersion"
+			jdbcType="VARCHAR" />
+		<result column="circuitBoardSapNo" property="circuitBoardSapNo"
+			jdbcType="VARCHAR" />
+		<result column="circuitBoardName" property="circuitBoardName"
+			jdbcType="VARCHAR" />
+		<result column="createPerson" property="createPerson" jdbcType="VARCHAR" />
+		<result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+		<result column="revisedRecord" property="revisedRecord"
+			jdbcType="VARCHAR" />
+		<!-- <association property="sapNo" resultMap="com.dayuan.bean.InstrumentinfoMapper.BaseResultMap"/> 
+			<collection property="circuitboardDetails" resultMap="com.dayuan.dao.CircuitboardDetailMapper"></collection> -->
+	</resultMap>
+
+	<resultMap id="JoinResultMap" type="com.dayuan.bean.Circuitboard">
+		<!-- <id column="sapNo" property="sapNo" jdbcType="VARCHAR" /> -->
+		<id column="sapNo" property="sapNo" jdbcType="VARCHAR" />
+		<id column="circuitBoardVersion" property="circuitBoardVersion"
+			jdbcType="VARCHAR" />
+		<result column="circuitBoardSapNo" property="circuitBoardSapNo"
+			jdbcType="VARCHAR" />
+		<result column="circuitBoardName" property="circuitBoardName"
+			jdbcType="VARCHAR" />
+		<result column="createPerson" property="createPerson" jdbcType="VARCHAR" />
+		<result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+		<result column="revisedRecord" property="revisedRecord"
+			jdbcType="VARCHAR" />
+		<collection property="circuitboardDetails" ofType="com.dayuan.bean.CircuitboardDetail"
+			resultMap="com.dayuan.dao.CircuitboardDetailMapper.JoinResultMap" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id,sapNo, circuitBoardVersion, circuitBoardSapNo, circuitBoardName,
+		createPerson, updateTime,
+		revisedRecord
+	</sql>
+
+	<select id="queryById" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tbl_business_circuitboard
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="queryList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tbl_business_circuitboard
+		where sapNo=#{keys}
+		<if test="boardName !=null">
+			and <![CDATA[ circuitBoardName like CONCAT('%',#{boardName},'%')  ]]>
+		</if>
+		ORDER BY updateTime desc LIMIT #{curPage},#{pageSize}
+	</select>
+
+	<select id="queryAllName" resultType="java.lang.String">
+		select
+		circuitBoardName
+		from tbl_business_circuitboard
+		where sapNo = #{keys}
+	</select>
+
+	<select id="queryRecordCount" resultType="java.lang.Integer">
+		select
+		count(1)
+		from tbl_business_circuitboard
+		where sapNo=${keys}
+		<if test="boardName != null">
+			and <![CDATA[ circuitBoardName like CONCAT('%',#{boardName},'%')  ]]>
+		</if>
+	</select>
+	<delete id="deleteById">
+		delete from tbl_business_circuitboard
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="add" useGeneratedKeys="true" keyProperty="id"
+		parameterType="com.dayuan.bean.Circuitboard">
+		insert into tbl_business_circuitboard (sapNo, circuitBoardVersion,
+		circuitBoardSapNo,
+		circuitBoardName, createPerson, updateTime,
+		revisedRecord)
+		values (#{sapNo,jdbcType=VARCHAR}, #{circuitBoardVersion,jdbcType=VARCHAR},
+		#{circuitBoardSapNo,jdbcType=VARCHAR},
+		#{circuitBoardName,jdbcType=VARCHAR},
+		#{createPerson,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR},
+		#{revisedRecord,jdbcType=VARCHAR})
+	</insert>
+
+	<insert id="addBySelective" useGeneratedKeys="true" keyProperty="id"
+		parameterType="com.dayuan.bean.Circuitboard">
+		insert into tbl_business_circuitboard
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="sapNo != null">
+				sapNo,
+			</if>
+			<if test="circuitBoardSapNo != null">
+				circuitBoardSapNo,
+			</if>
+			<if test="circuitBoardName != null">
+				circuitBoardName,
+			</if>
+			<if test="circuitBoardVersion != null">
+				circuitBoardVersion,
+			</if>
+			<if test="createPerson != null">
+				createPerson,
+			</if>
+			<if test="updateTime != null">
+				updateTime,
+			</if>
+			<if test="revisedRecord != null">
+				revisedRecord,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+				#{id,jdbcType=INTEGER},
+			</if>
+			<if test="sapNo != null">
+				#{sapNo,jdbcType=VARCHAR},
+			</if>
+			<if test="circuitBoardSapNo != null">
+				#{circuitBoardSapNo,jdbcType=VARCHAR},
+			</if>
+			<if test="circuitBoardName != null">
+				#{circuitBoardName,jdbcType=VARCHAR},
+			</if>
+			<if test="circuitBoardVersion != null">
+				#{circuitBoardVersion,jdbcType=VARCHAR},
+			</if>
+			<if test="createPerson != null">
+				#{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=DATE},
+			</if>
+			<if test="revisedRecord != null">
+				#{revisedRecord,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateBySelective" parameterType="com.dayuan.bean.Circuitboard">
+		update tbl_business_circuitboard
+		<set>
+			<if test="sapNo != null">
+				sapNo = #{sapNo,jdbcType=VARCHAR},
+			</if>
+			<if test="circuitBoardName != null">
+				circuitBoardName = #{circuitBoardName,jdbcType=VARCHAR},
+			</if>
+			<if test="createPerson != null">
+				createPerson = #{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime,jdbcType=DATE},
+			</if>
+			<if test="revisedRecord != null">
+				revisedRecord = #{revisedRecord,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<update id="updateById" parameterType="com.dayuan.bean.Circuitboard">
+		update tbl_business_circuitboard
+		set sapNo = #{sapNo,jdbcType=VARCHAR},
+		circuitBoardSapNo = #{circuitBoardSapNo,jdbcType=VARCHAR},
+		circuitBoardName = #{circuitBoardName,jdbcType=VARCHAR},
+		circuitBoardVersion = #{circuitBoardVersion,jdbcType=VARCHAR},
+		createPerson = #{createPerson,jdbcType=VARCHAR},
+		updateTime = #{updateTime,jdbcType=DATE},
+		revisedRecord = #{revisedRecord,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+</mapper>

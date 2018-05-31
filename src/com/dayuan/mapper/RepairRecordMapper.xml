@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.RepairRecordMapper" >
+  <resultMap id="BaseResultMap" type="com.dayuan.bean.RepairRecord" >
+    <id column="repairOrderNumber" property="repairOrderNumber" jdbcType="VARCHAR" />
+    <result column="instrumentFuselage" property="instrumentFuselage" jdbcType="VARCHAR" />
+    <result column="shipmentNo" property="shipmentNo" jdbcType="INTEGER" />
+     <result column="receivedDate" property="receivedDate" jdbcType="VARCHAR" />
+    <result column="faultDescription" property="faultDescription" jdbcType="VARCHAR" />
+    <result column="faultPicture" property="faultPicture" jdbcType="VARCHAR" />
+    <result column="planCompleteDate" property="planCompleteDate" jdbcType="VARCHAR" />
+    <result column="state" property="state" jdbcType="INTEGER" />
+    <result column="processingMethod" property="processingMethod" jdbcType="VARCHAR" />
+    <result column="processingPicture" property="processingPicture" jdbcType="VARCHAR" />
+    <result column="actualCompleteDate" property="actualCompleteDate" jdbcType="VARCHAR" />
+    <result column="repairMan" property="repairMan" jdbcType="VARCHAR" />
+    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="comments" property="comments" jdbcType="VARCHAR" />
+    <result column="sapNo" property="sapNo" jdbcType="VARCHAR" />
+    <result column="productName" property="productName" jdbcType="VARCHAR" />
+    
+  </resultMap>
+  
+    <resultMap id="JoinResultMap" type="com.dayuan.bean.RepairRecord" >
+	    <id column="repairOrderNumber" property="repairOrderNumber" jdbcType="VARCHAR" />
+	    <result column="instrumentFuselage" property="instrumentFuselage" jdbcType="VARCHAR" />
+	     <result column="receivedDate" property="receivedDate" jdbcType="VARCHAR" />
+	    <result column="faultDescription" property="faultDescription" jdbcType="VARCHAR" />
+	    <result column="faultPicture" property="faultPicture" jdbcType="VARCHAR" />
+	    <result column="planCompleteDate" property="planCompleteDate" jdbcType="VARCHAR" />
+	    <result column="state" property="state" jdbcType="INTEGER" />
+	    <result column="processingMethod" property="processingMethod" jdbcType="VARCHAR" />
+	    <result column="processingPicture" property="processingPicture" jdbcType="VARCHAR" />
+	    <result column="actualCompleteDate" property="actualCompleteDate" jdbcType="VARCHAR" />
+	    <result column="repairMan" property="repairMan" jdbcType="VARCHAR" />
+	    <result column="updateTime" property="updateTime" jdbcType="TIMESTAMP" />
+	    <result column="comments" property="comments" jdbcType="VARCHAR" />
+	     <result column="sapNo" property="sapNo" jdbcType="VARCHAR" />
+   		 <result column="productName" property="productName" jdbcType="VARCHAR" />
+	    <association property="shipmentNo" column="shipmentNo" javaType="com.dayuan.bean.Shippingrecords" resultMap="com.dayuan.dao.ShippingrecordsMapper.JoinResultMap"></association>
+  </resultMap>
+  
+   <resultMap id="ExportResultMap" type="com.dayuan.bean.ExportRepairRecorder" >
+   		<result column="repairOrderNumber" property="repairOrderNumber" />
+	    <result column="productName" property="productName" jdbcType="VARCHAR" />
+	    <result column="instrumentFuselage" property="instrumentFuselage" jdbcType="VARCHAR" />
+	     <result column="shippingDate" property="shippingDate" jdbcType="VARCHAR" />
+	    <result column="warrantyDate" property="warrantyDate" jdbcType="VARCHAR" />
+	    <result column="faultDescription" property="faultDescription" jdbcType="VARCHAR" />
+	    <result column="faultPicture" property="faultPicture" jdbcType="VARCHAR" />
+	    <result column="processingMethod" property="processingMethod"  />
+	    <result column="processingPicture" property="processingPicture" jdbcType="VARCHAR" />
+	    <result column="repairMan" property="repairMan" jdbcType="VARCHAR" />
+	    <result column="actualCompleteDate" property="actualCompleteDate" jdbcType="VARCHAR" />
+	    <result column="comments" property="comments" jdbcType="VARCHAR" />
+	    <result column="quantity" property="quantity" />
+	     <result column="sapNo" property="sapNo" />
+  </resultMap>
+  
+  <sql id="Base_Column_List" >
+    repairOrderNumber, instrumentFuselage, receivedDate,shipmentNo,sapNo, faultDescription, faultPicture, 
+    planCompleteDate, state, processingMethod, processingPicture, actualCompleteDate, 
+    repairMan, updateTime, comments
+  </sql>
+ <!--  <select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from tbl_business_repairrecord
+    where repairOrderNumber = #{repairOrderNumber,jdbcType=VARCHAR}
+  </select> -->
+  
+   <select id="queryById" resultMap="JoinResultMap" parameterType="java.lang.String" >
+    select 
+     repair.repairOrderNumber, repair.instrumentFuselage, repair.receivedDate,repair.sapNo, 
+   repair.faultDescription, repair.faultPicture,repair.planCompleteDate, repair.state, 
+   repair.processingMethod, repair.processingPicture, repair.actualCompleteDate, 
+   repair.repairMan, repair.updateTime, repair.comments,instrument.productName as productName
+    from tbl_business_repairrecord repair left join tbl_business_instrumentinfo instrument
+    on repair.sapNo=instrument.sapNo
+    where repairOrderNumber = #{id}
+  </select>
+  
+     <select id="queryList" resultMap="JoinResultMap">
+  select 
+   repair.repairOrderNumber, repair.instrumentFuselage, repair.receivedDate,repair.sapNo, 
+   repair.faultDescription, repair.faultPicture,repair.planCompleteDate, repair.state, 
+   repair.processingMethod, repair.processingPicture, repair.actualCompleteDate, 
+   repair.repairMan, repair.updateTime, repair.comments,instrument.productName as productName
+    from tbl_business_repairrecord repair  left join tbl_business_instrumentinfo instrument
+    on repair.sapNo=instrument.sapNo
+    <if test="repairKeys != null" >
+     where ( <![CDATA[ instrument.productName like CONCAT('%',#{repairKeys},'%')  ]]> 
+     or  <![CDATA[ repair.repairOrderNumber like CONCAT('%',#{repairKeys},'%')  ]]> )
+    </if>
+     <if test="state != 0" >
+     and repair.state=#{state}
+    </if>
+    ORDER BY repair.receivedDate desc LIMIT #{curPage},#{pageSize}
+  </select>
+  
+    <select id="queryRecordCount" resultType="java.lang.Integer">
+   select 
+    count(1)
+    from tbl_business_repairrecord repair left join tbl_business_shippingrecords ships
+    on repair.shipmentNo=ships.id  left join tbl_business_instrumentinfo instrument
+     on ships.sapNo=instrument.sapNo
+   <if test="repairKeys != null" >
+   where ( <![CDATA[ instrument.productName like CONCAT('%',#{repairKeys},'%')  ]]> 
+     or  <![CDATA[ repair.repairOrderNumber like CONCAT('%',#{repairKeys},'%')  ]]> )
+     </if>
+      <if test="state != 0" >
+     and repair.state=#{state}
+    </if>
+  </select>
+  
+  <select id="queryExportById" resultMap="ExportResultMap">
+  select repair.repairOrderNumber,repair.sapNo,
+(select  productName from tbl_business_instrumentinfo  where sapNo=repair.sapNo) as productName ,repair.instrumentFuselage,
+repair.faultDescription,repair.faultPicture,
+repair.processingMethod,repair.processingPicture,repair.repairMan,repair.actualCompleteDate,repair.comments
+ from tbl_business_repairrecord repair
+ where repairOrderNumber=#{repairOrderNumber}
+
+  </select>
+  
+   <select id="queryCountByShipId" resultType="java.lang.Integer" >
+     select count(*)  from  tbl_business_repairrecord repair   where repair.instrumentFuselage in 
+     <foreach collection="array" item="item" open="(" separator="," close=")" >
+     #{item}
+     </foreach>
+  </select>
+  
+   <select id="queryAllRepairNumber" resultType="java.lang.String">
+  select 
+    repair.repairOrderNumber
+    from tbl_business_repairrecord repair 
+  </select>
+   <select id="statisticsShip" resultMap="ExportResultMap">
+<!-- 	select repair.sapNo,1 as quantity,(select productName from tbl_business_instrumentinfo where sapNo=repair.sapNo) as productName  -->
+<!-- 	,repair.instrumentFuselage from tbl_business_repairrecord repair where  -->
+<!-- 	repair.receivedDate &gt;= #{startTime} and repair.receivedDate &lt;= #{endTime} -->
+		 	select repair.sapNo as sapNo,count(*) as quantity,repair.instrumentFuselage,
+		(select productName from  tbl_business_instrumentinfo where sapNo=ship.sapNo) as productName
+		 from tbl_business_repairrecord repair  
+		 left join tbl_business_shippingrecords ship on  
+		 repair.instrumentFuselage like CONCAT('%',ship.instrumentFuselage,'%') 
+		where 
+		 repair.receivedDate &gt;= #{startTime}
+		and 
+		repair.receivedDate &lt;= #{endTime}
+		 <if test="percent != null" >
+        and ship.shippingDate &gt;= #{startTime}
+        and ship.shippingDate &lt;= #{endTime}
+      </if>
+      GROUP BY repair.sapNo
+		<!--group by ship.sapNo -->
+	</select>
+	<select id="statisticsPieShip" resultMap="ExportResultMap">
+	select repair.sapNo as sapNo,count(repair.repairOrderNumber) as quantity,
+		(select productName from  tbl_business_instrumentinfo where sapNo=repair.sapNo) as productName
+		 from tbl_business_repairrecord repair  
+		 left join tbl_business_instrumentinfo instrument on repair.shipmentNo=instrument.sapNo  
+		where 
+		 repair.receivedDate &gt;= #{startTime}
+		and 
+		repair.receivedDate &lt;= #{endTime}
+		group by repair.sapNo
+	</select>
+  <delete id="deleteById" parameterType="java.lang.String" >
+    delete from tbl_business_repairrecord
+    where repairOrderNumber = #{repairOrderNumber,jdbcType=VARCHAR}
+  </delete>
+  <insert id="add" parameterType="com.dayuan.bean.RepairRecord" >
+    insert into tbl_business_repairrecord (repairOrderNumber,
+      shipmentNo,instrumentFuselage,receivedDate, faultDescription, faultPicture, 
+      planCompleteDate, state, processingMethod, 
+      processingPicture, actualCompleteDate, repairMan, 
+      updateTime, comments,sapNo)
+    values (#{repairOrderNumber,jdbcType=VARCHAR},
+      #{shipmentNo.id,jdbcType=INTEGER},#{instrumentFuselage,jdbcType=VARCHAR},#{receivedDate}, #{faultDescription,jdbcType=VARCHAR}, #{faultPicture,jdbcType=VARCHAR}, 
+      #{planCompleteDate,jdbcType=VARCHAR}, #{state,jdbcType=INTEGER}, #{processingMethod,jdbcType=VARCHAR}, 
+      #{processingPicture,jdbcType=VARCHAR}, #{actualCompleteDate,jdbcType=VARCHAR}, #{repairMan,jdbcType=VARCHAR}, 
+      #{updateTime,jdbcType=TIMESTAMP}, #{comments,jdbcType=VARCHAR}, #{sapNo,jdbcType=VARCHAR})
+  </insert><!-- instrumentFuselage,   #{instrumentFuselage,jdbcType=VARCHAR},  -->
+  
+    <!-- 批量插入数据 -->
+   <insert id="addList"  parameterType="List" >
+   insert into tbl_business_repairrecord (repairOrderNumber,
+      shipmentNo,sapNo,instrumentFuselage,receivedDate, faultDescription,  
+      planCompleteDate, state, processingMethod, 
+      actualCompleteDate, repairMan, 
+      updateTime, comments) values
+      <foreach collection="list" item="repair" index="index" separator=",">
+     (#{repair.repairOrderNumber,jdbcType=VARCHAR},
+      #{repair.shipmentNo.id,jdbcType=INTEGER},#{repair.sapNo,jdbcType=VARCHAR},#{repair.instrumentFuselage,jdbcType=VARCHAR},#{repair.receivedDate}, 
+      #{repair.faultDescription,jdbcType=VARCHAR},
+      #{repair.planCompleteDate,jdbcType=VARCHAR}, #{repair.state,jdbcType=INTEGER}, #{repair.processingMethod,jdbcType=VARCHAR}, 
+      #{repair.actualCompleteDate,jdbcType=VARCHAR}, #{repair.repairMan,jdbcType=VARCHAR}, 
+      #{repair.updateTime,jdbcType=TIMESTAMP}, #{repair.comments,jdbcType=VARCHAR})
+      </foreach>
+  </insert>
+  
+  <insert id="addBySelective" parameterType="com.dayuan.bean.RepairRecord" >
+    insert into tbl_business_repairrecord
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="repairOrderNumber != null" >
+        repairOrderNumber,
+      </if>
+      <if test="sapNo != null" >
+        sapNo,
+      </if>
+       <if test="receivedDate != null" >
+        receivedDate,
+      </if>
+      <if test="planCompleteDate != null" >
+        planCompleteDate,
+      </if>
+      <if test="repairMan != null" >
+        repairMan,
+      </if>
+      <if test="faultDescription != null" >
+        faultDescription,
+      </if>
+      <if test="faultPicture != null" >
+        faultPicture,
+      </if>
+      <if test="state != null" >
+        state,
+      </if>
+      <if test="processingMethod != null" >
+        processingMethod,
+      </if>
+      <if test="processingPicture != null" >
+        processingPicture,
+      </if>
+      <if test="actualCompleteDate != null" >
+        actualCompleteDate,
+      </if>
+      <if test="updateTime != null" >
+        updateTime,
+      </if>
+      <if test="comments != null" >
+        comments,
+      </if>
+      <if test="instrumentFuselage != null" >
+        instrumentFuselage,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="repairOrderNumber != null" >
+        #{repairOrderNumber,jdbcType=VARCHAR},
+      </if>
+       <if test="sapNo != null" >
+        #{sapNo,jdbcType=VARCHAR},
+      </if>
+       <if test="receivedDate != null" >
+        #{receivedDate,jdbcType=VARCHAR},
+      </if>
+       <if test="planCompleteDate != null" >
+        #{planCompleteDate,jdbcType=VARCHAR},
+      </if>
+       <if test="repairMan != null" >
+        #{repairMan,jdbcType=VARCHAR},
+      </if>
+      <if test="faultDescription != null" >
+        #{faultDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="faultPicture != null" >
+        #{faultPicture,jdbcType=VARCHAR},
+      </if>
+     
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="processingMethod != null" >
+        #{processingMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="processingPicture != null" >
+        #{processingPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="actualCompleteDate != null" >
+        #{actualCompleteDate,jdbcType=VARCHAR},
+      </if>
+     
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="comments != null" >
+        #{comments,jdbcType=VARCHAR},
+      </if>
+        <if test="instrumentFuselage != null" >
+        #{instrumentFuselage,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+ 
+  <update id="updateBySelective" parameterType="com.dayuan.bean.RepairRecord" >
+    update tbl_business_repairrecord
+    <set >
+     <if test="sapNo != null" >
+        sapNo = #{sapNo,jdbcType=VARCHAR},
+      </if>
+      <if test="productName != null" >
+        productName = #{productName,jdbcType=VARCHAR},
+      </if>
+      <if test="instrumentFuselage != null" >
+        instrumentFuselage = #{instrumentFuselage,jdbcType=VARCHAR},
+      </if>
+      <if test="shipmentNo != null" >
+        shipmentNo = #{shipmentNo.id},
+      </if>
+       <if test="receivedDate != null" >
+        receivedDate = #{receivedDate,jdbcType=VARCHAR},
+      </if>
+      <if test="faultDescription != null" >
+        faultDescription = #{faultDescription,jdbcType=VARCHAR},
+      </if>
+      <if test="faultPicture != null" >
+        faultPicture = #{faultPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="planCompleteDate != null" >
+        planCompleteDate = #{planCompleteDate,jdbcType=VARCHAR},
+      </if>
+      <if test="state != null" >
+        state = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="processingMethod != null" >
+        processingMethod = #{processingMethod,jdbcType=VARCHAR},
+      </if>
+      <if test="processingPicture != null" >
+        processingPicture = #{processingPicture,jdbcType=VARCHAR},
+      </if>
+      <if test="actualCompleteDate != null" >
+        actualCompleteDate = #{actualCompleteDate,jdbcType=VARCHAR},
+      </if>
+      <if test="repairMan != null" >
+        repairMan = #{repairMan,jdbcType=VARCHAR},
+      </if>
+      <if test="updateTime != null" >
+        updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="comments != null" >
+        comments = #{comments,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where repairOrderNumber = #{repairOrderNumber,jdbcType=VARCHAR}
+  </update>
+  
+  <update id="updateById" parameterType="com.dayuan.bean.RepairRecord" >
+    update tbl_business_repairrecord
+    set instrumentFuselage = #{instrumentFuselage,jdbcType=VARCHAR},
+      shipmentNo = #{shipmentNo.id,jdbcType=INTEGER},
+      receivedDate= #{receivedDate,jdbcType=VARCHAR},
+      faultDescription = #{faultDescription,jdbcType=VARCHAR},
+      faultPicture = #{faultPicture,jdbcType=VARCHAR},
+      planCompleteDate = #{planCompleteDate,jdbcType=VARCHAR},
+      state = #{state,jdbcType=INTEGER},
+      processingMethod = #{processingMethod,jdbcType=VARCHAR},
+      processingPicture = #{processingPicture,jdbcType=VARCHAR},
+      actualCompleteDate = #{actualCompleteDate,jdbcType=VARCHAR},
+      repairMan = #{repairMan,jdbcType=VARCHAR},
+      updateTime = #{updateTime,jdbcType=TIMESTAMP},
+      comments = #{comments,jdbcType=VARCHAR}
+    where repairOrderNumber = #{repairOrderNumber,jdbcType=VARCHAR}
+  </update>
+</mapper>

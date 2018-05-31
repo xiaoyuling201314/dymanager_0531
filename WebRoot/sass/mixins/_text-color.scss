@@ -1,0 +1,6 @@
+
+@mixin text-variant($state, $color) {
+  .text-#{$state} {
+    color: $color !important;
+  }
+}

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.PackinglistMapper">
+	<resultMap id="BaseResultMap" type="com.dayuan.bean.Packinglist">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="sapNo" property="sapNo" jdbcType="VARCHAR" />
+		<result column="packingListVersion" property="packingListVersion"
+			jdbcType="VARCHAR" />
+		<result column="packingListName" property="packingListName"
+			jdbcType="VARCHAR" />
+		<result column="createPerson" property="createPerson" jdbcType="VARCHAR" />
+		<result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+		<result column="revisedRecord" property="revisedRecord"
+			jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- <resultMap id="JoinResultMap" type="com.dayuan.bean.Packinglist" > 
+		<id column="packingListVersion" property="packingListVersion" jdbcType="VARCHAR" 
+		/> <result column="packingListName" property="packingListName" jdbcType="VARCHAR" 
+		/> <result column="createPerson" property="createPerson" jdbcType="VARCHAR" 
+		/> <result column="updateTime" property="updateTime" jdbcType="VARCHAR" /> 
+		<association property="sapNo" resultMap="com.dayuan.bean.InstrumentinfoMapper.BaseResultMap"/> 
+		<collection property="pacListDetails" ofType="com.dayuan.bean.PackingListDetail" 
+		resultMap="com.dayuan.dao.PackingListDetailMapper.JoinResultMap"/> </resultMap> -->
+
+	<sql id="Base_Column_List">
+		id, sapNo, packingListName, packingListVersion, createPerson,
+		updateTime,revisedRecord
+	</sql>
+
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from tbl_business_packinglist
+		where id = #{id,jdbcType=INTEGER}
+	</select>
+
+	<select id="queryAllName" resultType="java.lang.String">
+		select
+		packingListName
+		from tbl_business_packinglist
+		where sapNo = #{keys}
+	</select>
+
+	<select id="queryList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tbl_business_packinglist
+		where sapNo=#{keys}
+		<if test="packingListName !=null">
+			and <![CDATA[ packingListName like CONCAT('%',#{packingListName},'%')  ]]>
+		</if>
+		ORDER BY updateTime desc LIMIT #{curPage},#{pageSize}
+	</select>
+	<select id="queryRecordCount" resultType="java.lang.Integer">
+		select
+		count(1)
+		from tbl_business_packinglist
+		where sapNo=${keys}
+		<if test="packingListName != null">
+			and <![CDATA[ packingListName like CONCAT('%',#{packingListName},'%')  ]]>
+		</if>
+	</select>
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from tbl_business_packinglist
+		where id = #{id,jdbcType=INTEGER}
+	</delete>
+
+	<insert id="add" useGeneratedKeys="true" keyProperty="id"
+		parameterType="com.dayuan.bean.Packinglist">
+		insert into tbl_business_packinglist ( sapNo, packingListName,
+		packingListVersion, createPerson, updateTime,revisedRecord
+		)
+		values ( #{sapNo,jdbcType=VARCHAR}, #{packingListName,jdbcType=VARCHAR},
+		#{packingListVersion,jdbcType=VARCHAR},
+		#{createPerson,jdbcType=VARCHAR},
+		#{updateTime},#{revisedRecord,jdbcType=VARCHAR}
+		)
+	</insert>
+
+	<insert id="addBySelective" parameterType="com.dayuan.bean.Packinglist">
+		insert into tbl_business_packinglist
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="sapNo != null">
+				sapNo,
+			</if>
+			<if test="packingListName != null">
+				packingListName,
+			</if>
+			<if test="packingListVersion != null">
+				packingListVersion,
+			</if>
+			<if test="createPerson != null ">
+				createPerson,
+			</if>
+			<if test="updateTime != null">
+				updateTime,
+			</if>
+			<if test="revisedRecord != null and revisedRecord!=''">
+				revisedRecord,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="sapNo != null">
+				#{sapNo,jdbcType=VARCHAR},
+			</if>
+			<if test="packingListName != null">
+				#{packingListName,jdbcType=VARCHAR},
+			</if>
+			<if test="packingListVersion != null">
+				#{packingListVersion,jdbcType=VARCHAR},
+			</if>
+			<if test="createPerson != null">
+				#{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=DATE},
+			</if>
+			<if test="revisedRecord != null and revisedRecord!=''">
+				#{revisedRecord,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateBySelective" parameterType="com.dayuan.bean.Packinglist">
+		update tbl_business_packinglist
+		<set>
+			<if test="sapNo != null">
+				sapNo = #{sapNo,jdbcType=VARCHAR},
+			</if>
+			<if test="packingListName != null">
+				packingListName = #{packingListName,jdbcType=VARCHAR},
+			</if>
+			<if test="packingListVersion != null">
+				packingListVersion = #{packingListVersion,jdbcType=VARCHAR},
+			</if>
+			<if test="createPerson != null">
+				createPerson = #{createPerson,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime,jdbcType=DATE},
+			</if>
+			<if test="revisedRecord != null">
+				revisedRecord = #{revisedRecord,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<update id="updateById" parameterType="com.dayuan.bean.Packinglist">
+		update tbl_business_packinglist
+		set sapNo = #{sapNo,jdbcType=VARCHAR},
+		packingListName = #{packingListName,jdbcType=VARCHAR},
+		packingListVersion = #{packingListVersion,jdbcType=VARCHAR},
+		createPerson = #{createPerson,jdbcType=VARCHAR},
+		updateTime = #{updateTime,jdbcType=DATE},
+		revisedRecord=#{revisedRecord,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+</mapper>

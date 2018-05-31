@@ -1,0 +1,102 @@
+
+.checkbox {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  margin-right: 16px;
+
+  label {
+    display: inline-block;
+    vertical-align: middle;
+    position: relative;
+    cursor: pointer;
+    height: $checkbox-width;
+    line-height: $checkbox-width;
+    padding-left: $checkbox-width*2;
+
+    &:before, &:after {
+      content: "";
+      position: absolute;
+      display: inline-block;
+      position: absolute;
+      @include square($checkbox-width);
+      left: 0;
+      top: 0;
+      background-color: transparent;
+    }
+
+    &:before{
+      border: $checkbox-border-width solid $selection-border-color;
+      border-radius: $checkbox-radius;
+      transition: all .4s ease-in-out 0s;
+    }
+
+  }
+
+  input[type="checkbox"] {
+    opacity: 0; // remove default style
+    filter: alpha(opacity=0);
+    display: none;
+
+    &[checked] + label:after, &:checked + label:after{
+      content: "";
+      border-right: $checkbox-border-width solid $selection-border-color;
+      border-bottom: $checkbox-border-width solid $selection-border-color;
+      transform: rotate(40deg);
+      width: 6px;
+      height: 12px;
+      top: 3px;
+      left: 7px;
+    }
+
+    &[disabled] + label{
+      color: $selection-disabled-color;
+      cursor: not-allowed;
+
+      &:before{
+        border-color: $selection-disabled-color;
+      }
+    }
+    &[disabled][checked] + label:before{
+      border: none;
+      background-color: $selection-disabled-color;
+    }
+
+  }
+}
+
+&.checkbox-white {
+  label:before, label:after {
+    background-color: $white;
+  }
+  label:before {
+    border: none;
+  }
+
+}
+
+.checkbox-inline {
+  .checkbox {
+    display: inline-block;
+    margin-right: 32px;
+    margin-bottom: 10px;
+
+    &:first-child {
+      margin-left: 0;
+    }
+  }
+}
+
+@each $color-name in map-keys($colorful) {
+  .checkbox-#{$color-name} input[type="checkbox"]:checked + label {
+    &:before {
+      background-color: map-get($colorful, $color-name);
+      border-color: map-get($colorful, $color-name);
+    }
+    &:after {
+      border-bottom-color: $white;
+      border-right-color: $white;
+    }
+  }
+}
+

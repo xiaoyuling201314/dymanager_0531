@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.dayuan.dao.ManualMapper">
+	<resultMap id="BaseResultMap" type="com.dayuan.bean.Manual">
+		<id column="id" property="id" jdbcType="INTEGER" />
+		<result column="sapNo" property="sapNo" jdbcType="VARCHAR" />
+		<result column="version" property="version" jdbcType="VARCHAR" />
+		<result column="fileName" property="fileName" jdbcType="VARCHAR" />
+		<result column="reviser" property="reviser" jdbcType="VARCHAR" />
+		<result column="updateTime" property="updateTime" jdbcType="VARCHAR" />
+		<result column="revisedRecord" property="revisedRecord"
+			jdbcType="VARCHAR" />
+	</resultMap>
+	<sql id="Base_Column_List">
+		id, sapNo, fileName, reviser, version, updateTime, revisedRecord
+	</sql>
+
+	<select id="queryById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+		select
+		<include refid="Base_Column_List" />
+		from tbl_business_manual
+		where id = #{id}
+	</select>
+	<select id="queryList" resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from tbl_business_manual
+		where sapNo = #{keys}
+		<if test="manualName != null">
+			and   <![CDATA[ fileName like CONCAT('%',#{manualName},'%')  ]]>
+			or   <![CDATA[ version like CONCAT('%',#{manualName},'%')  ]]>
+			or   <![CDATA[ reviser like CONCAT('%',#{manualName},'%')  ]]>
+		</if>
+		ORDER BY updateTime desc LIMIT #{curPage},#{pageSize}
+	</select>
+
+
+	<select id="queryAllName" resultType="java.lang.String">
+		select
+		fileName
+		from tbl_business_manual
+		where sapNo = #{keys}
+	</select>
+	
+	<select id="queryRecordCount" resultType="java.lang.Integer">
+		select
+		count(1)
+		from tbl_business_manual
+		where sapNo = #{keys}
+		<if test="manualName != null">
+			and <![CDATA[ fileName like CONCAT('%',#{manualName},'%')  ]]>
+		</if>
+	</select>
+
+	<delete id="deleteById" parameterType="java.lang.Integer">
+		delete from tbl_business_manual
+		where id = #{id}
+	</delete>
+
+	<insert id="add" useGeneratedKeys="true" keyProperty="id"
+		parameterType="com.dayuan.bean.Manual">
+		insert into tbl_business_manual ( sapNo, fileName,
+		reviser, version, updateTime,
+		revisedRecord)
+		values (#{sapNo,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR},
+		#{reviser,jdbcType=VARCHAR}, #{version,jdbcType=VARCHAR},
+		#{updateTime,jdbcType=DATE},
+		#{revisedRecord,jdbcType=VARCHAR})
+	</insert>
+
+	<insert id="addBySelective" useGeneratedKeys="true" keyProperty="id"
+		parameterType="com.dayuan.bean.Manual">
+		insert into tbl_business_manual
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="sapNo != null">
+				sapNo,
+			</if>
+			<if test="fileName != null">
+				fileName,
+			</if>
+			<if test="reviser != null">
+				reviser,
+			</if>
+			<if test="version != null">
+				version,
+			</if>
+			<if test="updateTime != null">
+				updateTime,
+			</if>
+			<if test="revisedRecord != null">
+				revisedRecord,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="sapNo != null">
+				#{sapNo,jdbcType=VARCHAR},
+			</if>
+			<if test="fileName != null">
+				#{fileName,jdbcType=VARCHAR},
+			</if>
+			<if test="reviser != null">
+				#{reviser,jdbcType=VARCHAR},
+			</if>
+			<if test="version != null">
+				#{version,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				#{updateTime,jdbcType=DATE},
+			</if>
+			<if test="revisedRecord != null">
+				#{revisedRecord,jdbcType=VARCHAR},
+			</if>
+		</trim>
+	</insert>
+
+	<update id="updateBySelective" parameterType="com.dayuan.bean.Manual">
+		update tbl_business_manual
+		<set>
+			<if test="sapNo != null">
+				sapNo = #{sapNo,jdbcType=VARCHAR},
+			</if>
+			<if test="fileName != null">
+				fileName = #{fileName,jdbcType=VARCHAR},
+			</if>
+			<if test="reviser != null">
+				reviser = #{reviser,jdbcType=VARCHAR},
+			</if>
+			<if test="version != null">
+				version = #{version,jdbcType=VARCHAR},
+			</if>
+			<if test="updateTime != null">
+				updateTime = #{updateTime,jdbcType=DATE},
+			</if>
+			<if test="revisedRecord != null">
+				revisedRecord = #{revisedRecord,jdbcType=VARCHAR},
+			</if>
+		</set>
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+	<update id="updateById" parameterType="com.dayuan.bean.Manual">
+		update tbl_business_manual
+		set sapNo = #{sapNo,jdbcType=VARCHAR},
+		fileName = #{fileName,jdbcType=VARCHAR},
+		reviser = #{reviser,jdbcType=VARCHAR},
+		version = #{version,jdbcType=VARCHAR},
+		updateTime = #{updateTime,jdbcType=DATE},
+		revisedRecord = #{revisedRecord,jdbcType=VARCHAR}
+		where id = #{id,jdbcType=INTEGER}
+	</update>
+
+</mapper>
